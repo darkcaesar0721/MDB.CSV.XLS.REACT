@@ -1,3 +1,5 @@
 export const INIT_PATH_DATA = "INIT_PATH_DATA";
 
 export const INIT_EMAIL_DATA = "INIT_EMAIL_DATA";
+
+export const INIT_SETTING_DATA = "INIT_SETTING_DATA";
