@@ -52,7 +52,7 @@ const Email = (props) => {
     const handleShai1SendSubmit = function(form) {
         setLoading(true);
         setTip('wait for sending shai1 gmail');
-        props.sendEmail('shai1', {subject: form, receivers: form.receivers}, function() {
+        props.sendEmail('shai1', {subject: form.subject, receivers: form.receivers}, function() {
             setLoading(false);
             messageApi.success('Shai1 gmail send success')
             props.getSettingData();
@@ -62,7 +62,7 @@ const Email = (props) => {
     const handleShai2SendSubmit = function(form) {
         setLoading(true);
         setTip('wait for sending shai2 gmail');
-        props.sendEmail('shai2', {subject: form, receivers: form.receivers}, function() {
+        props.sendEmail('shai2', {subject: form.subject, receivers: form.receivers}, function() {
             setLoading(false);
             messageApi.success('Shai2 gmail send success')
             props.getSettingData();
@@ -72,7 +72,7 @@ const Email = (props) => {
     const handlePalm1SendSubmit = function(form) {
         setLoading(true);
         setTip('wait for sending palm1 gmail');
-        props.sendEmail('palm1', {subject: form, receivers: form.receivers}, function() {
+        props.sendEmail('palm1', {subject: form.subject, receivers: form.receivers}, function() {
             setLoading(false);
             messageApi.success('Palm1 gmail send success')
             props.getSettingData();

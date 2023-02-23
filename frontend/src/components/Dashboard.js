@@ -244,11 +244,6 @@ const Dashboard = (props) => {
                                 <Form.Item
                                     name={['download_time']}
                                     label="Download time"
-                                    rules={[
-                                        {
-                                            required: true,
-                                        },
-                                    ]}
                                 >
                                     <Select
                                         size="large"
@@ -264,11 +259,6 @@ const Dashboard = (props) => {
                                 <Form.Item
                                     name={['download_way']}
                                     label="Download way"
-                                    rules={[
-                                        {
-                                            required: true,
-                                        },
-                                    ]}
                                 >
                                     <Select
                                         size="large"
