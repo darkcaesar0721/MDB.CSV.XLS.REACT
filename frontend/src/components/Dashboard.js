@@ -1,7 +1,9 @@
 import {message, Spin, Divider, Row, Col, Input, Form, Select, Button, Popconfirm} from "antd";
 import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
-import {getPathData, getEmailData, setPathData, setEmailData, download} from "../redux/actions";
+import {getPathData, setPathData, download} from "../redux/actions";
+import Email from "./Email";
+import FileList from "./FileList";
 
 const downloadTimeOption = [
     {value: '8AM', label: '8AM'},
@@ -19,28 +21,21 @@ const Dashboard = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
 
     const [pathForm] = Form.useForm();
-    const [emailForm] = Form.useForm();
 
     const [loading, setLoading] = useState(false);
     const [tip, setTip] = useState('');
 
     const [path, setPath] = useState({});
-    const [email, setEmail] = useState({});
-
-    const [currentBtn, setCurrentBtn] = useState('');
 
     useEffect(function() {
         props.getPathData();
-        props.getEmailData();
     }, []);
 
     useEffect(function() {
         pathForm.setFieldsValue(props.path);
-        emailForm.setFieldsValue(props.email);
 
         setPath(props.path);
-        setEmail(props.email);
-    }, [props.path, props.email]);
+    }, [props.path]);
 
     const handleDownloadSubmit = function(form) {
         setLoading(true);
@@ -55,10 +50,6 @@ const Dashboard = (props) => {
                 messageApi.success('download success'); 
             }
         })
-    }
-
-    const handleEmailSendSubmit = function(form) {
-        
     }
 
     const handlePathChange = function(name, e) {
@@ -104,23 +95,6 @@ const Dashboard = (props) => {
         props.setPathData({download_way: v});
     }
 
-    const handleEmailChange = function(name, e) {
-        setEmail((oldState) => {
-            let newState = {...oldState};
-            newState[name] = e.target.value;
-            return newState;
-        });
-    }
-
-    const saveEmail = function(name) {
-        let rows = {};
-        rows[name] = email[name] === undefined ? '' : email[name];
-        props.setEmailData(rows);
-    }
-
-    const handleEmailSendBtnClick = function(name) {
-        setCurrentBtn(name);
-    }
     
     const validateMessages = {
         required: '${label} is required!'
@@ -325,183 +299,11 @@ const Dashboard = (props) => {
                             </Col>
                         </Row>
                     </Form>
-                    <Form
-                        onFinish={handleEmailSendSubmit}
-                        validateMessages={validateMessages}
-                        form={emailForm}
-                        style={{padding: '1rem', paddingBottom: '0', border: '1px solid #898383', borderRadius: '10px', marginTop: '1rem'}}
-                    >
-                        <Row>
-                            <Col span={5} offset={3}>
-                                <Form.Item
-                                    name={['sender']}
-                                    label="Sender"
-                                    rules={[
-                                        {
-                                            required: true,
-                                        },
-                                    ]}
-                                    
-                                >
-                                    <Input size="large" placeholder="yourgamil@gmail.com" onBlur={(e) => {saveEmail('sender')}} onChange={(e) => {handleEmailChange('sender', e)}}/>
-                                </Form.Item>
-                            </Col>
-                            <Col span={6} offset={1}>
-                                <Form.Item
-                                    name={['password']}
-                                    label="App password"
-                                    rules={[
-                                        {
-                                            required: true,
-                                        },
-                                    ]}
-                                    
-                                >
-                                    <Input size="large" placeholder="" onBlur={(e) => {saveEmail('password')}} onChange={(e) => {handleEmailChange('password', e)}}/>
-                                </Form.Item>
-                            </Col>
-                            <Col span={2} offset={1}>
-                                <Form.Item
-                                    
-                                >
-                                    <Popconfirm
-                                        title="Send Shai1 email"
-                                        description="Are you sure to send shai1 email?"
-                                        onConfirm={() => {
-                                            handleEmailSendBtnClick('shai1');
-                                            emailForm.submit();
-                                        }}
-                                        okText="Send"
-                                        cancelText="No"
-                                    >
-                                        <Button style={{marginTop: '0.3rem'}} type="primary" htmlType="submit">Shai1</Button>
-                                    </Popconfirm>
-                                </Form.Item>
-                            </Col>
-                            <Col span={2}>
-                                <Form.Item
-                                    
-                                >
-                                    <Popconfirm
-                                        title="Send Shai2 email"
-                                        description="Are you sure to send shai2 email?"
-                                        onConfirm={() => {
-                                            handleEmailSendBtnClick('shai2');
-                                            emailForm.submit();
-                                        }}
-                                        okText="Send"
-                                        cancelText="No"
-                                    >
-                                        <Button style={{marginTop: '0.3rem'}} type="primary" htmlType="submit">Shai2</Button>
-                                    </Popconfirm>
-                                </Form.Item>
-                            </Col>
-                            <Col span={2}>
-                                <Form.Item
-                                    
-                                >
-                                    <Popconfirm
-                                        title="Send Palm1 email"
-                                        description="Are you sure to send palm1 email?"
-                                        onConfirm={() => {
-                                            handleEmailSendBtnClick('palm1');
-                                            emailForm.submit();
-                                        }}
-                                        okText="Send"
-                                        cancelText="No"
-                                    >
-                                        <Button style={{marginTop: '0.3rem'}} type="primary" htmlType="submit">Palm1</Button>
-                                    </Popconfirm>
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Form>
-                    <Row>
-                        <Col className={!path.download_way || path.download_way === 'all' || path.download_way === 'csv' ? 'download-group-selected' : ''} span={12} style={{marginTop: '1rem', padding: '1rem', border: '1px solid #898383', borderRadius: '10px'}}>
-                            <Divider>CSV FILE LIST</Divider>
-                            <Row>
-                                <Col span={15}>
-                                    <span>00_ALL_{folder_name}_CA Window Door</span>
-                                </Col>
-                                <Col span={9}>
-                                    <span>06_BAY_{folder_name} North</span>
-                                </Col>
-                                <Col span={15} style={{marginTop: '0.5rem'}}>
-                                    <span>01_ALL_{folder_name}_KitchenBathDecksRenovate.csv</span>
-                                </Col>
-                                <Col span={9} style={{marginTop: '0.5rem'}}>
-                                    <span>07_OR_{folder_name}</span>
-                                </Col>
-                                <Col span={15} style={{marginTop: '0.5rem'}}>
-                                    <span>02_LA_{folder_name}</span>
-                                </Col>
-                                <Col span={9} style={{marginTop: '0.5rem'}}>
-                                    <span>08_TX_Austin_{folder_name}</span>
-                                </Col>
-                                <Col span={15} style={{marginTop: '0.5rem'}}>
-                                    <span>03_SD_{folder_name}</span>
-                                </Col>
-                                <Col span={9} style={{marginTop: '0.5rem'}}>
-                                    <span>09_TX_Houston_{folder_name}</span>
-                                </Col>
-                                <Col span={15} style={{marginTop: '0.5rem'}}>
-                                    <span>04_WA_{folder_name}</span>
-                                </Col>
-                                <Col span={9} style={{marginTop: '0.5rem'}}>
-                                    <span>10_TX_Dallas_{folder_name}</span>
-                                </Col>
-                                <Col span={15} style={{marginTop: '0.5rem'}}>
-                                    <span>05_BAY_{folder_name} South</span>
-                                </Col>
-                            </Row>
-                        </Col>
-                        <Col className={!path.download_way || path.download_way === 'all' || path.download_way === 'xls' ? 'download-group-selected' : ''} span={6} style={{marginTop: '1rem', padding: '1rem', border: '1px solid #898383', borderRadius: '10px'}}>
-                            <Divider>XLS SHEET LIST</Divider>
-                            <Row>
-                                <Col span={24} style={{textAlign: 'center'}}>
-                                    <span>File Name: {folder_name}_PALM.xls</span>
-                                </Col>
-                                <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
-                                    <span>WA</span>
-                                </Col>
-                                <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
-                                    <span>BAY</span>
-                                </Col>
-                                <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
-                                    <span>SD</span>
-                                </Col>
-                                <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
-                                    <span>LA</span>
-                                </Col>
-                                <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
-                                    <span>FL</span>
-                                </Col>
-                            </Row>
-                        </Col>
-                        <Col className={!path.download_way || path.download_way === 'all' || path.download_way === 'trc' ? 'download-group-selected' : ''} span={6} style={{marginTop: '1rem', padding: '1rem', border: '1px solid #898383', borderRadius: '10px'}}>
-                            <Divider>TRC CSV GROUP LIST</Divider>
-                            <Row>
-                                <Col span={24} style={{textAlign: 'center'}}>
-                                    <span>File Name: {folder_name}_TRC.xls</span>
-                                </Col>
-                                <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
-                                    <span>TRC_1 CA_LA</span>
-                                </Col>
-                                <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
-                                    <span>TRC_2 CA_VENTURA</span>
-                                </Col>
-                                <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
-                                    <span>TRC_3 CA_OR</span>
-                                </Col>
-                                <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
-                                    <span>TRC_4 CA_SB RS</span>
-                                </Col>
-                                <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
-                                    <span>TRC_5 WA</span>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
+                    <Email/>
+                    <FileList
+                        path={props.path}
+                        folder_name={folder_name}
+                    />
                 </Col>
             </Row>
         </Spin>
@@ -509,10 +311,10 @@ const Dashboard = (props) => {
 }
 
 const mapStateToProps = state => {
-    return { path: state.path, email: state.email };
+    return { path: state.path };
 };
 
 export default connect(
     mapStateToProps,
-    { getPathData, getEmailData, setPathData, setEmailData, download }
+    { getPathData, setPathData, download }
 )(Dashboard);
