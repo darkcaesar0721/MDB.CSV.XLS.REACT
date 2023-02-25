@@ -177,6 +177,8 @@ try {
         }
 
         foreach ($a_csv as $index => $csv) {
+            if ($index == 8) continue;
+
             $query = $csv['query'];
             $sth = $db->prepare("select * from [$query]");
             $sth->execute();

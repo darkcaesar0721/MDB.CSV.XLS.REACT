@@ -21,21 +21,27 @@ const FileList = function(props) {
                     <Col span={15} style={{marginTop: '0.5rem'}}>
                         <span>02_LA_{props.folder_name}</span>
                     </Col>
-                    <Col span={9} style={{marginTop: '0.5rem'}}>
+                    {/* <Col span={9} style={{marginTop: '0.5rem'}}>
                         <span>08_TX_Austin_{props.folder_name}</span>
-                    </Col>
-                    <Col span={15} style={{marginTop: '0.5rem'}}>
-                        <span>03_SD_{props.folder_name}</span>
-                    </Col>
+                    </Col> */}
                     <Col span={9} style={{marginTop: '0.5rem'}}>
                         <span>09_TX_Houston_{props.folder_name}</span>
                     </Col>
                     <Col span={15} style={{marginTop: '0.5rem'}}>
-                        <span>04_WA_{props.folder_name}</span>
+                        <span>03_SD_{props.folder_name}</span>
                     </Col>
+                    {/* <Col span={9} style={{marginTop: '0.5rem'}}>
+                        <span>09_TX_Houston_{props.folder_name}</span>
+                    </Col> */}
                     <Col span={9} style={{marginTop: '0.5rem'}}>
                         <span>10_TX_Dallas_{props.folder_name}</span>
                     </Col>
+                    <Col span={15} style={{marginTop: '0.5rem'}}>
+                        <span>04_WA_{props.folder_name}</span>
+                    </Col>
+                    {/* <Col span={9} style={{marginTop: '0.5rem'}}>
+                        <span>10_TX_Dallas_{props.folder_name}</span>
+                    </Col> */}
                     <Col span={15} style={{marginTop: '0.5rem'}}>
                         <span>05_BAY_{props.folder_name} South</span>
                     </Col>

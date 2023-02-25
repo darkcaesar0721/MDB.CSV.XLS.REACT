@@ -69,12 +69,12 @@ $a_counts = [
         'i' => -1,
         'v' => 0,
     ],
-    8 => [
-        'c' => '8 ALIT Shai TX',
-        'k' => 'AUS',
-        'i' => -1,
-        'v' => 0,
-    ],
+//    8 => [
+//        'c' => '8 ALIT Shai TX',
+//        'k' => 'AUS',
+//        'i' => -1,
+//        'v' => 0,
+//    ],
     9 => [
         'c' => ' 9 ALIT Shai TX HOU',
         'k' => 'HOU',
@@ -178,13 +178,13 @@ switch($action) {
             }
             array_push($settings->$name->files, ['path' => $file_path7, 'name' => $file_name7]);
 
-            $file_name8 = '08_TX_Austin_' . $folder_name . '.csv';
-            $file_path8 = $folder_path . '\\' . $file_name8;
-            if (!file_exists($file_path8)) {
-                echo json_encode(array('status' => 'error', 'text' => $file_name8 . " doesn't exist."));
-                exit;
-            }
-            array_push($settings->$name->files, ['path' => $file_path8, 'name' => $file_name8]);
+//            $file_name8 = '08_TX_Austin_' . $folder_name . '.csv';
+//            $file_path8 = $folder_path . '\\' . $file_name8;
+//            if (!file_exists($file_path8)) {
+//                echo json_encode(array('status' => 'error', 'text' => $file_name8 . " doesn't exist."));
+//                exit;
+//            }
+//            array_push($settings->$name->files, ['path' => $file_path8, 'name' => $file_name8]);
 
             $file_name9 = '09_TX_Houston_' . $folder_name . '.csv';
             $file_path9 = $folder_path . '\\' . $file_name9;
@@ -202,95 +202,97 @@ switch($action) {
             }
             array_push($settings->$name->files, ['path' => $file_path10, 'name' => $file_name10]);
 
-            date_default_timezone_set('America/Los_Angeles');
-            
-            $count_path = $path->count_xls_path;
+           date_default_timezone_set('America/Los_Angeles');
 
-            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
-    
-            $spreadsheet = $reader->load($count_path);
-            $d = $spreadsheet->getSheet(0)->toArray();
-    
-            foreach($d as $r) {
-                foreach($r as $i => $c) {
-                    foreach($a_counts as $j => $a_c) {
-                        if ($a_c['c'] === $c) {
-                            $a_counts[$j]['i'] = $i;
-                        }
-                    }
-                }
-            }
-            
-            $sp = explode(' ', $folder_name);
-            $date = substr($sp[0], 0, 2) . '/' . substr($sp[0], 2, 2) . '/' . substr($sp[0], 4, 4);
-            $date_info = getDate(strtotime($date));
-            $time = ($sp[1] == '8AM' ? '8am' : '2pm');
-            
-            if ($date_info['wday'] == 4) {
-                $cur_index = -1;
-                $cur_row = [];
-                foreach ($d as $i => $row) {
-                    if (strtotime($row[0]) == strtotime($date) && strpos($row[1], "8am") > 0) {
-                        $cur_index = $i; $cur_row = $row;
-                    }
-                }
-                if ($cur_index !== -1) {
-                    foreach($a_counts as $i => $a_c) {
-                        $a_counts[$i]['v'] = $cur_row[$a_c['i']];
-                    }
-                }
-                if ($time == "2pm") {
-                    $cur_index = -1;
-                    $cur_row = [];
-                    foreach ($d as $i => $row) {
-                        if (strtotime($row[0]) == strtotime($date) && strpos($row[1], "2pm") > 0) {
-                            $cur_index = $i; $cur_row = $row;
-                        }
-                    }
-                    if ($cur_index !== -1) {
-                        foreach($a_counts as $i => $a_c) {
-                            $a_counts[$i]['v'] = $a_counts[$i]['v'] . ' ' . $cur_row[$a_c['i']]; 
-                        }
-                    }
-                }
-            } else {
-                $cur_index = -1;
-                $cur_row = [];
-                foreach ($d as $i => $row) {
-                    if (strtotime($row[0]) == strtotime($date)) {
-                        $cur_index = $i; $cur_row = $row;
-                    }
-                }
-    
-                if ($cur_index !== -1) {
-                    foreach($a_counts as $i => $a_c) {
-                        if ($time == "2pm") {
-                            $a_counts[$i]['v'] = $cur_row[$a_c['i']];
-                        } else {
-                            $sp1 = explode(' ', $cur_row[$a_c['i']]);
-                            $a_counts[$i]['v'] = $sp1[0];
-                        }
-                    }
-                }
-            }
+           $count_path = $path->count_xls_path;
+
+           $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+
+           $spreadsheet = $reader->load($count_path);
+           $d = $spreadsheet->getSheet(0)->toArray();
+
+           foreach($d as $r) {
+               foreach($r as $i => $c) {
+                   foreach($a_counts as $j => $a_c) {
+                       if ($a_c['c'] === $c) {
+                           $a_counts[$j]['i'] = $i;
+                       }
+                   }
+               }
+           }
+           
+           $sp = explode(' ', $folder_name);
+           $date = substr($sp[0], 0, 2) . '/' . substr($sp[0], 2, 2) . '/' . substr($sp[0], 4, 4);
+           $date_info = getDate(strtotime($date));
+           $time = ($sp[1] == '8AM' ? '8am' : '2pm');
+
+           if ($date_info['wday'] == 4) {
+               $cur_index = -1;
+               $cur_row = [];
+               foreach ($d as $i => $row) {
+                   if (strtotime($row[0]) == strtotime($date) && strpos($row[1], "8am") > 0) {
+                       $cur_index = $i; $cur_row = $row;
+                   }
+               }
+               if ($cur_index !== -1) {
+                   foreach($a_counts as $i => $a_c) {
+                       $a_counts[$i]['v'] = $cur_row[$a_c['i']];
+                   }
+               }
+               if ($time == "2pm") {
+                   $cur_index = -1;
+                   $cur_row = [];
+                   foreach ($d as $i => $row) {
+                       if (strtotime($row[0]) == strtotime($date) && strpos($row[1], "2pm") > 0) {
+                           $cur_index = $i; $cur_row = $row;
+                       }
+                   }
+                   if ($cur_index !== -1) {
+                       foreach($a_counts as $i => $a_c) {
+                           $a_counts[$i]['v'] = $a_counts[$i]['v'] . ' ' . $cur_row[$a_c['i']];
+                       }
+                   }
+               }
+           } else {
+               $cur_index = -1;
+               $cur_row = [];
+               foreach ($d as $i => $row) {
+                   if (strtotime($row[0]) == strtotime($date)) {
+                       $cur_index = $i; $cur_row = $row;
+                   }
+               }
+
+               if ($cur_index !== -1) {
+                   foreach($a_counts as $i => $a_c) {
+                       if ($time == "2pm") {
+                           $a_counts[$i]['v'] = $cur_row[$a_c['i']];
+                       } else {
+                           $sp1 = explode(' ', $cur_row[$a_c['i']]);
+                           $a_counts[$i]['v'] = $sp1[0];
+                       }
+                   }
+               }
+           }
 
             $settings->$name->subject = $folder_name;
             $body = "<table border='0' cellpadding='0' cellspacing='0' width='726' style='border-collapse:collapse;width:539pt'>
-                            <colgroup><col width='66' span='11' style='width:49pt'>
-                            </colgroup>
-                            <tbody>
-                                <tr height='18' style='height:13.4pt'>
-                                    <td height='18' width='66' style='height:13.4pt;width:49pt;font-size:9pt;font-weight:700;font-family:Calibri,sans-serif;text-align:center;border:1pt solid silver;padding-top:1px;padding-right:1px;padding-left:1px;color:windowtext;vertical-align:bottom'>". $a_counts[0]['v'] ."</td>";
+                           <colgroup><col width='66' span='11' style='width:49pt'>
+                           </colgroup>
+                           <tbody>
+                               <tr height='18' style='height:13.4pt'>
+                                   <td height='18' width='66' style='height:13.4pt;width:49pt;font-size:9pt;font-weight:700;font-family:Calibri,sans-serif;text-align:center;border:1pt solid silver;padding-top:1px;padding-right:1px;padding-left:1px;color:windowtext;vertical-align:bottom'>". $a_counts[0]['v'] ."</td>";
 
             for ($i = 1; $i < 11; $i++) {
-                $body .= "<td width='66' style='border-left:none;width:49pt;font-size:9pt;font-weight:700;font-family:Calibri,sans-serif;text-align:center;border-top:1pt solid silver;border-right:1pt solid silver;border-bottom:1pt solid silver;padding-top:1px;padding-right:1px;padding-left:1px;color:windowtext;vertical-align:bottom'>". $a_counts[$i]['v'] ."</td>";
+                if ($i === 8) continue;
+               $body .= "<td width='66' style='border-left:none;width:49pt;font-size:9pt;font-weight:700;font-family:Calibri,sans-serif;text-align:center;border-top:1pt solid silver;border-right:1pt solid silver;border-bottom:1pt solid silver;padding-top:1px;padding-right:1px;padding-left:1px;color:windowtext;vertical-align:bottom'>". $a_counts[$i]['v'] ."</td>";
             }
-            
+
             $body .= "</tr>";
             $body .= "<tr height='18' style='height:13.4pt'>
-                                <td height='18' width='66' style='height:13.4pt;border-top:none;width:49pt;font-size:9pt;font-weight:700;font-family:Calibri,sans-serif;text-align:center;border-right:1pt solid silver;border-bottom:1pt solid silver;border-left:1pt solid silver;padding-top:1px;padding-right:1px;padding-left:1px;color:windowtext;vertical-align:bottom'>". $a_counts[0]['k'] ."</td>";
+                               <td height='18' width='66' style='height:13.4pt;border-top:none;width:49pt;font-size:9pt;font-weight:700;font-family:Calibri,sans-serif;text-align:center;border-right:1pt solid silver;border-bottom:1pt solid silver;border-left:1pt solid silver;padding-top:1px;padding-right:1px;padding-left:1px;color:windowtext;vertical-align:bottom'>". $a_counts[0]['k'] ."</td>";
             for ($i = 1; $i < 11; $i++) {
-                $body .= "<td width='66' style='border-top:none;border-left:none;width:49pt;font-size:9pt;font-weight:700;font-family:Calibri,sans-serif;text-align:center;border-right:1pt solid silver;border-bottom:1pt solid silver;padding-top:1px;padding-right:1px;padding-left:1px;color:windowtext;vertical-align:bottom'>". $a_counts[$i]['k'] ."</td>";
+                if ($i === 8) continue;
+               $body .= "<td width='66' style='border-top:none;border-left:none;width:49pt;font-size:9pt;font-weight:700;font-family:Calibri,sans-serif;text-align:center;border-right:1pt solid silver;border-bottom:1pt solid silver;padding-top:1px;padding-right:1px;padding-left:1px;color:windowtext;vertical-align:bottom'>". $a_counts[$i]['k'] ."</td>";
             }
             $body .= "</tr></tbody></table>";
             $settings->$name->body = $body;
