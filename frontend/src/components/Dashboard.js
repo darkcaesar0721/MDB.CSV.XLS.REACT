@@ -11,10 +11,9 @@ const downloadTimeOption = [
 ];
 
 const downloadWayOption = [
-    {value: 'all', label: 'CSV & XLS & TRC'},
+    {value: 'all', label: 'CSV & XLS'},
     {value: 'csv', label: 'CSV'},
-    {value: 'xls', label: 'XLS'},
-    {value: 'trc', label: 'TRC'},
+    {value: 'xls', label: 'XLS'}
 ];
 
 const Dashboard = (props) => {
@@ -113,6 +112,7 @@ const Dashboard = (props) => {
             </Row>
             <Row style={{marginTop: '1rem'}}>
                 <Col span={21} offset={1}>
+                    
                     <Form
                         onFinish={handleDownloadSubmit}
                         validateMessages={validateMessages}
@@ -121,7 +121,21 @@ const Dashboard = (props) => {
                         style={{padding: '1rem', border: '1px solid #898383', borderRadius: '10px'}}
                     >
                         <Row>
-                            <Col span={5} offset={1}>
+                            <Col span={20} offset={2}>
+                                <Form.Item
+                                    name={['schedule']}
+                                    label="Schedule Google Sheet URL"
+                                    rules={[
+                                        {
+                                            required: true,
+                                        },
+                                    ]}
+                                    
+                                >
+                                    <Input size="large" placeholder="https://docs.google.com/spreadsheets/d/16fiKZjpWZ3ZCY69JpRrTBAYLS4GnjqEKp8tj2G65EAI/edit#gid=0" onBlur={(e) => {savePath('schedule')}} onChange={(e) => {handlePathChange('schedule', e)}}/>
+                                </Form.Item>
+                            </Col>
+                            <Col span={7} offset={1}>
                                 <Form.Item
                                     name={['mdb_path']}
                                     label="MDB file path"
@@ -135,7 +149,7 @@ const Dashboard = (props) => {
                                     <Input size="large" placeholder="C:\mdb_work\LeadDB_ThisSMALL.mdb" onBlur={(e) => {savePath('mdb_path')}} onChange={(e) => {handlePathChange('mdb_path', e)}}/>
                                 </Form.Item>
                             </Col>
-                            <Col span={5} offset={1}>
+                            <Col span={7} offset={1}>
                                 <Form.Item
                                     name={['csv_path']}
                                     label="CSV download folder path"
@@ -148,7 +162,7 @@ const Dashboard = (props) => {
                                     <Input size="large" placeholder="C:\mdb_work\CSV" onBlur={(e) => {savePath('csv_path')}} onChange={(e) => {handlePathChange('csv_path', e)}}/>
                                 </Form.Item>
                             </Col>
-                            <Col span={5} offset={1}>
+                            <Col span={7} offset={1}>
                                 <Form.Item
                                     name={['xls_path']}
                                     label="XLS download folder path"
@@ -161,21 +175,8 @@ const Dashboard = (props) => {
                                     <Input size="large" placeholder="C:\mdb_work\XLS" onBlur={(e) => {savePath('xls_path')}} onChange={(e) => {handlePathChange('xls_path', e)}}/>
                                 </Form.Item>
                             </Col>
-                            <Col span={5} offset={1}>
-                                <Form.Item
-                                    name={['trc_path']}
-                                    label="TRC download folder path"
-                                    rules={[
-                                        {
-                                            required: true,
-                                        },
-                                    ]}
-                                >
-                                    <Input size="large" placeholder="C:\mdb_work\TRC" onBlur={(e) => {savePath('trc_path')}} onChange={(e) => {handlePathChange('trc_path', e)}}/>
-                                </Form.Item>
-                            </Col>
-                            <Col span={5} offset={1}>
-                                <Form.Item
+                            <Col span={7} offset={1}>
+                                {/* <Form.Item
                                     name={['count_xls_path']}
                                     label="Count xls file path"
                                     rules={[
@@ -186,9 +187,9 @@ const Dashboard = (props) => {
                                     
                                 >
                                     <Input size="large" placeholder="C:\mdb_work\Query Counts.xls" onBlur={(e) => {savePath('count_xls_path')}} onChange={(e) => {handlePathChange('count_xls_path', e)}}/>
-                                </Form.Item>
+                                </Form.Item> */}
                             </Col>
-                            <Col span={5} offset={1}>
+                            <Col span={7} offset={1}>
                                 <Form.Item
                                     name={['csv_previous_path']}
                                     label="CSV previous download folder path"
@@ -201,7 +202,7 @@ const Dashboard = (props) => {
                                     <Input size="large" placeholder="C:\mdb_work\CSV\02232023 8AM" onBlur={(e) => {savePath('csv_previous_path')}} onChange={(e) => {handlePathChange('csv_previous_path', e)}}/>
                                 </Form.Item>
                             </Col>
-                            <Col span={5} offset={1}>
+                            <Col span={7} offset={1}>
                                 <Form.Item
                                     name={['xls_previous_path']}
                                     label="XLS previous download folder path"
@@ -212,19 +213,6 @@ const Dashboard = (props) => {
                                     ]}
                                 >
                                     <Input size="large" placeholder="C:\mdb_work\XLS\02232023 8AM" onBlur={(e) => {savePath('xls_previous_path')}} onChange={(e) => {handlePathChange('xls_previous_path', e)}}/>
-                                </Form.Item>
-                            </Col>
-                            <Col span={5} offset={1}>
-                                <Form.Item
-                                    name={['trc_previous_path']}
-                                    label="TRC previous download folder path"
-                                    rules={[
-                                        {
-                                            required: true,
-                                        },
-                                    ]}
-                                >
-                                    <Input size="large" placeholder="C:\mdb_work\TRC\02232023 8AM" onBlur={(e) => {savePath('trc_previous_path')}} onChange={(e) => {handlePathChange('trc_previous_path', e)}}/>
                                 </Form.Item>
                             </Col>
                             <Col span={5} offset={4}>

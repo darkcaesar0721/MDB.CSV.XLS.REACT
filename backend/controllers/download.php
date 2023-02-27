@@ -1,6 +1,10 @@
 <?php
 require '../vendor/autoload.php';
 
+use Google_Client;
+use Google_Service_Sheets;
+use Google_Service_Sheets_ValueRange;
+
 $path_file = '../db/path.json';
 $path = json_decode(file_get_contents($path_file));
 
@@ -30,116 +34,173 @@ if (!file_exists($count_xls_path)) {
 $a_csv = array(
     0 => array(
         'query' => "003a27_00a_Alit_CA Windows Doors  ------------------------  >>",
+        'schedule' => "0 Shai - W D, CA",
+        'schedule_index' => -1,
         'file' => "00_ALL_" . $folder . "_CA Window Door.csv",
         'count' => ''
     ),
     1 => array(
         'query' => "003a27_01_Alit_ALL_Kitchen Bathroom Decks",
+        'schedule' => "1 Shai KBD",
+        'schedule_index' => -1,
         'file' => "01_ALL_" . $folder . "_KitchenBathDecksRenovate.csv",
         'count' => ''
     ),
     2 => array(
         'query' => "003a27_02_Alit_LA",
+        'schedule' => "2 ALIT Shai LA",
+        'schedule_index' => -1,
         'file' => "02_LA_" . $folder . ".csv",
         'count' => ''
     ),
     3 => array(
         'query' => "003a27_03_Alit_SD",
+        'schedule' => "3 ALIT Shai SD",
+        'schedule_index' => -1,
         'file' => "03_SD_" . $folder . ".csv",
         'count' => ''
     ),
     4 => array(
         'query' => "003a27_04_Alit_WA",
+        'schedule' => "4 ALIT Shai WA",
+        'schedule_index' => -1,
         'file' => "04_WA_" . $folder . ".csv",
         'count' => ''
     ),
     5 => array(
         'query' => "003a27_05_Alit_BAY South",
+        'schedule' => "5 ALIT Shai BAY South",
+        'schedule_index' => -1,
         'file' => "05_BAY_" . $folder . " South.csv",
         'count' => ''
     ),
     6 => array(
         'query' => "003a27_06_Alit_BAY North",
+        'schedule' => "6 ALIT Shai BAY Noth",
+        'schedule_index' => -1,
         'file' => "06_BAY_" . $folder . " North.csv",
         'count' => ''
     ),
     7 => array(
         'query' => "003a27_07_Alit_OR",
+        'schedule' => "7 ALIT Shai OR",
+        'schedule_index' => -1,
         'file' => "07_OR_" . $folder . ".csv",
         'count' => ''
     ),
     8 => array(
         'query' => "003a27_08_Alit_Austin",
+        'schedule' => "8 ALIT Shai TX",
+        'schedule_index' => -1,
         'file' => "08_TX_Austin_" . $folder . ".csv",
         'count' => ''
     ),
     9 => array(
         'query' => "003a27_09_Alit_Houston",
+        'schedule' => " 9 ALIT Shai TX HOU",
+        'schedule_index' => -1,
         'file' => "09_TX_Houston_" . $folder . ".csv",
         'count' => ''
     ),
     10 => array(
         'query' => "003a27_10_Alit_Dallas",
+        'schedule' => "10 ALIT Shai TX  DAL",
+        'schedule_index' => -1,
         'file' => "10_TX_Dallas_" . $folder . ".csv",
         'count' => ''
     )
 );
 
 $a_xls = array(
-    0 => array(
+    20 => array(
         'query' => "003a10_Palm CON WA <<< PALM NEW>>>------------",
         'sheet' => "WA",
+        'schedule' => "Palm CON WA",
+        'schedule_index' => -1,
         'count' => ''
     ),
-    1 => array(
+    21 => array(
         'query' => "003a11_Palm CON BAY",
         'sheet' => "BAY",
+        'schedule' => "Palm CON BAY",
+        'schedule_index' => -1,
         'count' => ''
     ),
-    2 => array(
+    22 => array(
         'query' => "003a12_Palm CON SD",
         'sheet' => "SD",
+        'schedule' => "Palm CON SD",
+        'schedule_index' => -1,
         'count' => ''
     ),
-    3 => array(
+    23 => array(
         'query' => "003a13_Palm CON LA",
         'sheet' => "LA",
+        'schedule' => "Palm CON LA",
+        'schedule_index' => -1,
         'count' => ''
     ),
-    4 => array(
+    24 => array(
         'query' => "003a13a_Palm CON FL",
         'sheet' => "FL",
+        'schedule' => "Palm CON FL",
+        'schedule_index' => -1,
         'count' => ''
     )
 );
 
-$a_trc = array(
-    0 => array(
-        'query' => '003a23_TRC_1 CA_LA',
-        'key' => 'Date 1 - LA',
-        'count' => '',
-    ),
-    1 => array(
-        'query' => '003a23_TRC_2 CA_VENTURA',
-        'key' => 'Date 2 - VENT',
-        'count' => '',
-    ),
-    2 => array(
-        'query' => '003a23_TRC_3 CA_OR',
-        'key' => 'Date 3 - OR',
-        'count' => '',
-    ),
-    3 => array(
-        'query' => '003a23_TRC_4 CA_SB RS',
-        'key' => 'Date 4 - SB RV',
-        'count' => '',
-    ),
-    4 => array(
-        'query' => '003a23_TRC_5 WA',
-        'key' => 'Date 5 - WA',
-        'count' => '',
-    ),
-);
+$client = new \Google_Client();
+$client->setApplicationName('Google Sheets and PHP');
+$client->setScopes([\Google_Service_Sheets::SPREADSHEETS]);
+$client->setAccessType('offline');
+$client->setAuthConfig(__DIR__ . '/../credentials.json');
+$service = new Google_Service_Sheets($client);
+
+$url_array = parse_url($path->schedule);
+$path_array = explode("/", $url_array["path"]);
+
+$spreadsheetId = $path_array[3];
+$spreadSheet = $service->spreadsheets->get($spreadsheetId);
+$sheets = $spreadSheet->getSheets();
+
+$cur_sheet = [];
+foreach($sheets as $sheet) {
+    $sheetId = $sheet['properties']['sheetId'];
+
+    $pos = strpos($path->schedule, "gid=" . $sheetId);
+
+    if($pos) {
+        $cur_sheet = $sheet;
+        break;
+    }
+}
+
+$response = $service->spreadsheets_values->get($spreadsheetId, $cur_sheet['properties']['title']);
+$schedules = $response->getValues();
+
+$cur_schedule_index = -1;
+$cur_schedule = [];
+
+foreach($schedules as $i => $v) {
+    foreach($v as $j => $r) {
+        if (strtotime($date) == strtotime(date($r))) {
+            $cur_schedule_index = $i;
+            $cur_schedule = $v;
+        }
+
+        foreach($a_csv as $k => $csv) {
+            if ($csv['schedule'] == $r) {
+                $a_csv[$k]['schedule_index'] = $j;
+            }
+        }
+
+        foreach($a_xls as $k => $xls) {
+            if ($xls['schedule'] == $r) {
+                $a_xls[$k]['schedule_index'] = $j;
+            }
+        }
+    }
+}
 
 try {
     # OPEN BOTH DATABASE CONNECTIONS
@@ -225,7 +286,8 @@ try {
             $spreadsheet = $reader->load($files[0]);
 
             foreach($a_xls as $index => $xls) {
-                $d = $spreadsheet->getSheet($index)->toArray();
+                $sheet_index = $index * 1 - 20;
+                $d = $spreadsheet->getSheet($sheet_index)->toArray();
                 $a_xls[$index]['pre_phone'] = $d[1][1];
             }
         } else {
@@ -245,15 +307,17 @@ try {
 
         $worksheets = [];
         foreach ($a_xls as $index => $xls) {
+            $sheet_index = $index * 1 - 20;
+
             $query = $xls['query'];
             $sth = $db->prepare("select * from [$query]");
             $sth->execute();
 
             $worksheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($mySpreadsheet, $xls['sheet']);
-            $mySpreadsheet->addSheet($worksheet, $index);
+            $mySpreadsheet->addSheet($worksheet, $sheet_index);
 
             $data = [];
-            if ($index === 3)
+            if ($sheet_index === 3)
                 array_push($data, ['Date', 'Phone', 'Name', 'Address', 'City', 'State', 'Zip', 'Job Group', 'COUNTY.COUNTY']);
             else
                 array_push($data, ['Date', 'Phone', 'Name', 'Address', 'City', 'State', 'Zip', 'Job Group', 'COUNTY']);
@@ -262,7 +326,7 @@ try {
             while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
                 if ($row['Phone'] == $xls['pre_phone']) break;
 
-                if ($index === 3)
+                if ($sheet_index === 3)
                     array_push($data, [$row['Date'], $row['Phone'], $row['Name'], $row['Address'], $row['City'], $row['State'], $row['Zip'], $row['Job Group'], $row['COUNTY.COUNTY']]);
                 else
                     array_push($data, [$row['Date'], $row['Phone'], $row['Name'], $row['Address'], $row['City'], $row['State'], $row['Zip'], $row['Job Group'], $row['COUNTY']]);
@@ -295,183 +359,148 @@ try {
 
         $xls_previous_path = $xls_path . "\\" . $folder;
     }
-    if ($file_type === 'trc' || $file_type === 'all') {
-        //get previous csv download information
-        if (file_exists($trc_previous_path)) {
-            $files = glob($trc_previous_path . "\\" . "*.csv");
-
-            $sel_index = -1;
-            if (($handle = fopen($files[0], "r")) !== FALSE) {
-                while (($data = fgetcsv($handle, 4096, ",")) !== FALSE) {
-                    if ($sel_index !== -1) {
-                        $a_trc[$sel_index]['pre_phone'] = $data[1];
-                        $sel_index = -1;
-                    }
-
-                    foreach($a_trc as $index => $trc) {
-                        if ($trc['key'] === $data[0]) {
-                            $sel_index = $index;
-                        }
-                    }
-                }
-                fclose($handle);
-            } else {
-                echo json_encode(array('status' => 'warning', 'description' => "Can't open TRC previous download file"));
-                exit;
-            }
-        } else {
-            echo json_encode(array('status' => 'error', 'description' => 'TRC previous download file path wrong'));
-            exit;
-        }
-
-        $folder_path = $trc_path . "\\" . $folder . "\\";
-
-        if (!file_exists($folder_path)) {
-            mkdir($folder_path, 0777, true);
-        }
-
-        $fp = fopen($folder_path . "\\" . $folder . '_TRC.csv', 'w');
-
-        foreach ($a_trc as $index => $trc) {
-            $query = $trc['query'];
-            $sth = $db->prepare("select * from [$query]");
-            $sth->execute();
-
-            $data = array();
-
-            fputcsv($fp, array($trc['key'], 'Phone', 'Name', 'Address', 'City', 'State', 'Zip', 'Job Group', 'County'));
-
-            $a_trc[$index]['count'] = 0;
-            while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-                if ($row['Phone'] === $trc['pre_phone']) break;
-
-                fputcsv($fp, array($row[$trc['key']], $row['Phone'], $row['Name'], $row['Address'], $row['City'], $row['State'], $row['Zip'], $row['Job Group'], $row['County']));
-
-                $a_trc[$index]['count'] = $a_trc[$index]['count'] + 1;
-            }
-
-            fputcsv($fp, array('', '', '','', '', '', '', '', ''));
-        }
-
-        fclose($fp);
-
-        $trc_previous_path = $trc_path . "\\" . $folder;
-    }
-
 } catch(PDOException $e) {
     echo json_encode(array('status' => 'error', 'description' => 'mdb file path wrong'));
     exit;
 }
 
 $date_info = getDate(strtotime($date));
-$_time = ($time == '8AM' ? '8am' : '2pm');
 
 $reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xls");
 $spreadsheet = $reader->load($count_xls_path);
 $sheet = $spreadsheet->getActiveSheet();
 $data = $sheet->toArray();
 
+if ($time == '2pm') $time = '2PM';
+if ($time == '8am') $time = '8AM';
+
+$rows = array();
+if ($file_type === 'all') $rows = array_merge($a_csv, $a_xls);
+else if ($file_type === 'csv') $rows = $a_csv;
+else $rows = $a_xls;
+
 if ($date_info['wday'] == 4) {
-    $cur_index = -1;
-    $cur_row = [];
-    foreach ($data as $i => $row) {
-        if ($row[0] === $date && $row[1] === $date_info['weekday'] . ' ' . $_time) {
-            $cur_index = $i; $cur_row = $row;
+    $name = $date_info['weekday'] . ' ' . $time;
+    $cur_schedule = [];
+    $cur_schedule_index = -1;
+    foreach($schedules as $i => $v) {
+        $cur_date_index = -1;
+        $cur_name_index = -1;
+        foreach($v as $j => $r) {
+            if (strtotime($date) == strtotime(date($r))) {
+                $cur_date_index = $i;
+            }
+            if ($name == $r) {
+                $cur_name_index = $i;
+            }
+        }
+
+        if ($cur_date_index != -1 && $cur_date_index == $cur_name_index) {
+            $cur_schedule = $v;
+            $cur_schedule_index = $i;
         }
     }
 
-    if ($cur_index === -1) {
-        $last_row = (int) $sheet->getHighestRow();
+    $row = ['', $date, $name];
 
-        $row = $last_row + 1;
+    for ($i = 3; $i < 100; $i++) {
+        $ext = false;
+        foreach($rows as $c_index => $c){
+            if ($i == $c['schedule_index']) {
+                if ($cur_schedule_index !== -1) {
+                    if ($cur_schedule[$i]) {
+                        if (strpos($cur_schedule[$i], '+') !== false) {
+                            array_push($row, $cur_schedule[$i] . '+' . $c['count']);
+                        } else {
+                            if ($cur_schedule[$i] == ' ' || $cur_schedule[$i] == '') {
+                                array_push($row, $c['count']);
+                            } else {
+                                $exp = explode(" ", $cur_schedule[$i]);
+                                if (count($exp) > 2) {
+                                    array_push($row, $cur_schedule[$i] . ' ' . $c['count']);
+                                } else {
+                                    if ((int)$exp[0] < 13) {
+                                        array_push($row, $cur_schedule[$i] . '+' . $c['count']);
+                                    } else {
+                                        array_push($row, $cur_schedule[$i] . ' ' . $c['count']);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        array_push($row, $c['count']);
+                    }
+                } else {
+                    array_push($row, $c['count']);
+                }
+                $ext = true;
+            }
+        }
 
-        $col = 1;
-        $sheet->setCellValueByColumnAndRow($col++, $row, $date);
-        $sheet->setCellValueByColumnAndRow($col++, $row, $date_info['weekday'] . ' ' . $_time);
-
-        foreach($a_xls as $index => $xls) {
-            $sheet->setCellValueByColumnAndRow($col++, $row, $xls['count']);
+        if (!$ext) {
+            if (!$cur_schedule[$i]) array_push($row, ' ');
+            else array_push($row, $cur_schedule[$i]);
         }
-        $col++;
-        foreach($a_trc as $index => $trc) {
-            $sheet->setCellValueByColumnAndRow($col++, $row, $trc['count']);
-        }
-        $col++;
-        foreach($a_csv as $index => $csv) {
-            $sheet->setCellValueByColumnAndRow($col++, $row, $csv['count']);
-        }
-        $sheet->getStyle('C' . $row . ':T' . $row)->getAlignment()->setHorizontal('right');
-    } else {
-        $col = 3;
-        foreach($a_xls as $index => $xls) {
-            $sheet->setCellValueByColumnAndRow($col++, $cur_index + 1, $cur_row[$col - 2] . ' ' . $xls['count']);
-        }
-        $col++;
-        foreach($a_trc as $index => $trc) {
-            $sheet->setCellValueByColumnAndRow($col++, $cur_index + 1, $cur_row[$col - 2] . ' ' . $trc['count']);
-        }
-        $col++;
-        foreach($a_csv as $index => $csv) {
-            $sheet->setCellValueByColumnAndRow($col++, $cur_index + 1, $cur_row[$col - 2] . ' ' . $csv['count']);
-        }
-        $sheet->getStyle('C' . ($cur_index + 1) . ':Z' . ($cur_index + 1))->getAlignment()->setHorizontal('right');
     }
 } else {
-    $cur_index = -1;
-    $cur_row = [];
-    foreach ($data as $i => $row) {
-        if ($row[0] === $date) {
-            $cur_index = $i; $cur_row = $row;
-        }
-    }
+    $row = ['', $date, date('l')];
 
-    if ($cur_index === -1) {
-        $last_row = (int) $sheet->getHighestRow();
+    for ($i = 3; $i < 100; $i++) {
+        $ext = false;
+        foreach($rows as $c_index => $c){
+            if ($i == $c['schedule_index']) {
+                if ($cur_schedule_index !== -1) {
+                    if ($cur_schedule[$i]) {
+                        if (strpos($cur_schedule[$i], '+') !== false) {
+                            array_push($row, $cur_schedule[$i] . '+' . $c['count']);
+                        } else {
+                            if ($cur_schedule[$i] == ' ' || $cur_schedule[$i] == '') {
+                                array_push($row, $c['count']);
+                            } else {
+                                $exp = explode(" ", $cur_schedule[$i]);
+                                if (count($exp) > 2) {
+                                    array_push($row, $cur_schedule[$i] . ' ' . $c['count']);
+                                } else {
+                                    if ((int)$exp[0] < 13) {
+                                        array_push($row, $cur_schedule[$i] . '+' . $c['count']);
+                                    } else {
+                                        array_push($row, $cur_schedule[$i] . ' ' . $c['count']);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        array_push($row, $c['count']);
+                    }
 
-        $row = $last_row + 1;
+                } else {
+                    array_push($row, $c['count']);
+                }
+                $ext = true;
+            }
+        }
 
-        $col = 1;
-        $sheet->setCellValueByColumnAndRow($col++, $row, $date);
-        $sheet->setCellValueByColumnAndRow($col++, $row, $date_info['weekday']);
-
-        foreach($a_xls as $index => $xls) {
-            $sheet->setCellValueByColumnAndRow($col++, $row, $xls['count']);
+        if (!$ext) {
+            if (!$cur_schedule[$i]) array_push($row, ' ');
+            else array_push($row, $cur_schedule[$i]);
         }
-        $col++;
-        foreach($a_trc as $index => $trc) {
-            $sheet->setCellValueByColumnAndRow($col++, $row, $trc['count']);
-        }
-        $col++;
-        foreach($a_csv as $index => $csv) {
-            $sheet->setCellValueByColumnAndRow($col++, $row, $csv['count']);
-        }
-        $sheet->getStyle('C' . $row . ':Z' . $row)->getAlignment()->setHorizontal('left');
-    } else {
-        $col = 3;
-        foreach($a_xls as $index => $xls) {
-            $sheet->setCellValueByColumnAndRow($col++, $cur_index + 1, $cur_row[$col - 2] . ' ' . $xls['count']);
-        }
-        $col++;
-        foreach($a_trc as $index => $trc) {
-            $sheet->setCellValueByColumnAndRow($col++, $cur_index + 1, $cur_row[$col - 2] . ' ' . $trc['count']);
-        }
-        $col++;
-        foreach($a_csv as $index => $csv) {
-            $sheet->setCellValueByColumnAndRow($col++, $cur_index + 1, $cur_row[$col - 2] . ' ' . $csv['count']);
-        }
-        $sheet->getStyle('C' . ($cur_index + 1) . ':Z' . ($cur_index + 1))->getAlignment()->setHorizontal('left');
     }
 }
 
-$sheet->getStyle('A')->getAlignment()->setHorizontal('right');
+$body = new Google_Service_Sheets_ValueRange([
+    'values' => [$row]
+]);
+$params = [
+    'valueInputOption' => 'USER_ENTERED'
+];
 
-$last_row = (int) $sheet->getHighestRow();
-$sheet->getStyle('A2:' . 'Z' . ($last_row + 1))->getFont()->setBold(true)
-    ->setName('Arial')
-    ->setSize(8);
+if ($cur_schedule_index == -1) {
+    $update_range = $cur_sheet['properties']['title']. '!' . 'A' . (count($schedules) + 1) . ':' . 'ZZ' . (count($schedules) + 1);
+} else {
+    $update_range = $cur_sheet['properties']['title'] . '!' . 'A' . ($cur_schedule_index + 1) . ':' . 'ZZ' . ($cur_schedule_index + 1);
+}
 
-$writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, "Xls");
-$writer->save($count_xls_path);
+$update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_range, $body, $params);
 
 if ($time === '2PM') {
     $date = date("mdY", strtotime('+1 day', strtotime($date)));
@@ -484,7 +513,6 @@ if ($time === '2PM') {
 
 $path->csv_previous_path = $csv_previous_path;
 $path->xls_previous_path = $xls_previous_path;
-$path->trc_previous_path = $trc_previous_path;
 
 file_put_contents($path_file, json_encode($path));
 
