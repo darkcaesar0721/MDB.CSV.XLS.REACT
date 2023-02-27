@@ -504,10 +504,10 @@ $update_sheet = $service->spreadsheets_values->update($spreadsheetId, $update_ra
 
 if ($time === '2PM') {
     $date = date("mdY", strtotime('+1 day', strtotime($date)));
-    $path->download_time = '8am';
+    $path->download_time = '8AM';
     $path->folder_name = $date . ' 8AM'; 
 } else {
-    $path->download_time = '2pm';
+    $path->download_time = '2PM';
     $path->folder_name = $sp[0] . ' 2PM'; 
 }
 
