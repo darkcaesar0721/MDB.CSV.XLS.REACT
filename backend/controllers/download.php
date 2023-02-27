@@ -216,7 +216,12 @@ try {
                 if (($handle = fopen($file, "r")) !== FALSE) {
                     while (($data = fgetcsv($handle, 4096, ",")) !== FALSE) {
                         if ($data[5] !== 'Phone') {
-                            $a_csv[$index]['pre_phone'] = $data[5];
+                            if ($index >= 8) {
+                                $a_csv[$index + 1]['pre_phone'] = $data[5];
+                            } else {
+                                $a_csv[$index]['pre_phone'] = $data[5];
+                            }
+
                             break;
                         }
                     }
