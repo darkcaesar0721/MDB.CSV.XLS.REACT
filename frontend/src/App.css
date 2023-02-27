@@ -37,6 +37,10 @@
   }
 }
 
+label, span, div, input {
+  font-family: Arial !important;
+}
+
 .download-group-selected {
   background-color: #d7d2d2;
 }
