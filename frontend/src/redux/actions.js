@@ -82,19 +82,21 @@ export const setSettingData = (key = 'shai1', rows = {}, callback = function() {
     })
 }
 
-export const downloadCSV = (data, callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'controllers/download_csv.php', qs.stringify(
+export const downloadCSV = (index, data, callback = function() {}) => async (dispatch) => {
+    axios.post(APP_API_URL + 'controllers/download_csv.php', qs.stringify({
+        index,
         data
-    ))
+    }))
         .then(function(resp) {
             callback(resp);
         })
 }
 
-export const downloadXLSTab = (data, callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'controllers/download_xls.php', qs.stringify(
+export const downloadXLSTab = (index, data, callback = function() {}) => async (dispatch) => {
+    axios.post(APP_API_URL + 'controllers/download_xls.php', qs.stringify({
+        index,
         data
-    ))
+    }))
         .then(function(resp) {
             callback(resp);
         })

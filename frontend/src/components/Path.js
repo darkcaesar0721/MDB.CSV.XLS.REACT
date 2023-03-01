@@ -141,6 +141,8 @@ const Path = (props) => {
                     </Form.Item>
                 </Col>
                 <Col span={7} offset={1}>
+                </Col>
+                <Col span={7} offset={1}>
                     <Form.Item
                         name={['csv_previous_path']}
                         label="CSV previous download folder path"

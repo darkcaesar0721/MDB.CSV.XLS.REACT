@@ -177,11 +177,11 @@ const Dashboard = (props) => {
     }
 
     const downloadCSV = function(index, callback = function() {}) {
-        props.downloadCSV(csvFiles[index], function(resp) {
+        props.downloadCSV(index, csvFiles[index], function(resp) {
             if (resp.data.status === 'error' || resp.data.status === 'warning') {
                 messageApi.error(resp.data.description);
             } else {
-                updateCSVFile(index, resp.data);
+                updateCSVFile(index, resp.data.csv);
 
                 if (index + 1 === csvFiles.length) {
                     callback();
@@ -202,17 +202,17 @@ const Dashboard = (props) => {
     }
 
     const downloadXLSTab = function(index, callback = function() {}) {
-        props.downloadXLSTab(xlsTabs[index], function(resp) {
+        props.downloadXLSTab(index, xlsTabs[index], function(resp) {
             if (resp.data.status === 'error' || resp.data.status === 'warning') {
                 messageApi.error(resp.data.description);
             } else {
-                updateXLSTab(index, resp.data);
+                updateXLSTab(index, resp.data.tab);
 
-                if (index + 1 === csvFiles.length) {
+                if (index + 1 === xlsTabs.length) {
                     callback();
                     return;
                 } else {
-                    downloadCSV(index + 1, callback);
+                    downloadXLSTab(index + 1, callback);
                 }
             }
         });

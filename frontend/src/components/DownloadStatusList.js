@@ -61,6 +61,7 @@ const DownloadStatusList = (props) => {
     ]
 
     useEffect(function() {
+        
     }, []);
 
     const handleTableChange = (pagination, filters, sorter) => {
