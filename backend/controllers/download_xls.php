@@ -91,7 +91,7 @@ try {
     $writer = new PhpOffice\PhpSpreadsheet\Writer\Xls($mySpreadsheet);
     $writer->save($folder_path . "\\" . $folder . '_PALM.xls');
 
-    echo json_encode(array('status' => 'success', 'tab' => $xls));
+    echo json_encode(array('status' => 'success', 'tab' => $xls));  
 
 } catch(PDOException $e) {
     echo json_encode(array('status' => 'error', 'description' => 'mdb file path wrong'));

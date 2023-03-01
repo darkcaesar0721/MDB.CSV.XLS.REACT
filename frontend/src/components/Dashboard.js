@@ -1,8 +1,9 @@
-import {message, Spin, Divider, Row, Col, Modal} from "antd";
+import {message, Spin, Divider, Row, Col, Modal, Button} from "antd";
 import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {downloadCSV, downloadXLSTab} from "../redux/actions";
-import DownloadStatusList from "./DownloadStatusList";
+import CSVDownloadStatusList from "./DownloadStatus/CSVList";
+import XLSTabDownloadStatusList from "./DownloadStatus/XLSTabList";
 import Email from "./Email";
 import FileList from "./FileList";
 import Path from "./Path";
@@ -12,7 +13,8 @@ const Dashboard = (props) => {
     const [loading, setLoading] = useState(false);
     const [tip, setTip] = useState('');
     const [open, setOpen] = useState(false);
-    const [downloadStatusInfos, setDownloadStatusInfos] = useState([]);
+    const [csvDownloadStatus, setCSVDownloadStatus] = useState([]);
+    const [xlsTabDownloadStatus, setXLSTabDownloadStatus] = useState([]);
     const [csvFiles, setCSVFiles] = useState([]);
     const [xlsTabs, setXLSTabs] = useState([]);
 
@@ -259,12 +261,25 @@ const Dashboard = (props) => {
                 header={null}
                 footer={null}
                 closable={false}
-                width={700}
+                width={900}
             >
-                <DownloadStatusList
-                    downloadStatusInfos={downloadStatusInfos}
-                    setOpen={setOpen}
-                />
+                <Row>
+                    <Col span={2}>
+                        <Button type="primary" onClick={(e) => {setOpen(false)}}>Close Window</Button>
+                    </Col>
+                </Row>
+                {
+                    props.path.download_way !== undefined && (props.path.download_way === 'all' || props.path.download_way === 'csv') ?
+                        <CSVDownloadStatusList
+                            csvDownloadStatus={csvDownloadStatus}
+                        /> : ''
+                }
+                {
+                    props.path.download_way !== undefined && (props.path.download_way === 'all' || props.path.download_way === 'xls') ?
+                        <XLSTabDownloadStatusList
+                            xlsTabDownloadStatus={xlsTabDownloadStatus}
+                        /> : ''
+                }
             </Modal>
         </Spin>
     )

@@ -1,8 +1,8 @@
-import {Button, Col, Row, Switch, Table} from "antd";
+import {Col, Row, Table, Divider} from "antd";
 import React, {useEffect, useState} from "react";
 import {LoadingOutlined, CheckCircleTwoTone} from "@ant-design/icons";
 
-const DownloadStatusList = (props) => {
+const XLSTabDownloadStatusList = (props) => {
     const [tableParams, setTableParams] = useState({
         pagination: {
             current: 1,
@@ -41,23 +41,20 @@ const DownloadStatusList = (props) => {
             }
         },
         {
-            title: 'Download File Name',
-            dataIndex: 'file',
-            key: 'file',
+            title: 'Download XLS Sheet Name',
+            dataIndex: 'sheet',
+            key: 'sheet',
         },
         {
-            title: 'WhatsApp',
-            key: 'whatsapp',
-            render: (_, r) => {
-                return (
-                    <Switch
-                        size="small"
-                        checked={r.isWhatsApp === "true" || r.isWhatsApp === true}
-                        disabled={true}
-                    />
-                )
-            }
-        }
+            title: 'Query Name',
+            dataIndex: 'query',
+            key: 'query',
+        },
+        {
+            title: 'Upload Count',
+            dataIndex: 'count',
+            key: 'count',
+        },
     ]
 
     useEffect(function() {
@@ -75,8 +72,8 @@ const DownloadStatusList = (props) => {
     return (
         <>
             <Row>
-                <Col span={2}>
-                    <Button type="primary" disabled={!props.isClose} onClick={(e) => {props.setOpen(false)}}>Close Window</Button>
+                <Col span={24}>
+                    <Divider><h2>XLS TAB DOWNLOAD STATUS LIST</h2></Divider>
                 </Col>
             </Row>
             <Row style={{marginTop: '0.4rem'}}>
@@ -85,7 +82,7 @@ const DownloadStatusList = (props) => {
                         bordered={true}
                         size="small"
                         columns={columns}
-                        dataSource={props.downloadStatus}
+                        dataSource={props.xlsTabDownloadStatus}
                         pagination={tableParams.pagination}
                         onChange={handleTableChange}
                         className="antd-custom-table"
@@ -96,4 +93,4 @@ const DownloadStatusList = (props) => {
     )
 }
 
-export default DownloadStatusList;
+export default XLSTabDownloadStatusList;
