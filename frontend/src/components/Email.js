@@ -26,13 +26,15 @@ const formItemLayoutWithOutLabel = {
 
 const Email = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
-    const [loading, setLoading] = useState(false);
-    const [tip, setTip] = useState('');
+
     const [email, setEmail] = useState({});
     const [emailForm] = Form.useForm();
     const [shai1Form] = Form.useForm();
     const [shai2Form] = Form.useForm();
     const [palm1Form] = Form.useForm();
+
+    const [loading, setLoading] = useState(false);
+    const [tip, setTip] = useState('');
 
     useEffect(function() {
         props.getEmailData();
@@ -94,10 +96,10 @@ const Email = (props) => {
     }
 
     const handleEmailSendBtnClick = function(name) {
-        setLoading(true);
-        setTip('wait for getting gamil data');
+        props.setLoading(true);
+        props.setTip('wait for getting gamil data');
         props.setSettingDataByMail(name, function(resp) {
-            setLoading(false);
+            props.setLoading(false);
             if (resp.data.status === 'error') {
                 messageApi.error(resp.data.text);
             } else {
@@ -117,7 +119,7 @@ const Email = (props) => {
     }
 
     return (
-        <Spin spinning={loading} tip={tip} delay={500}>
+        <>
             {contextHolder}
             <Form
                 validateMessages={validateMessages}
@@ -218,6 +220,7 @@ const Email = (props) => {
                             open={props.settings.shai1.open === true}
                             footer={null}
                             width={700}
+                            closable={false}
                         >
                             <Spin spinning={loading} tip={tip} delay={500}>
                                 <Row>
@@ -341,6 +344,7 @@ const Email = (props) => {
                             open={props.settings.shai2.open === true}
                             footer={null}
                             width={900}
+                            closable={false}
                         >
                             <Spin spinning={loading} tip={tip} delay={500}>
                                 <Row>
@@ -475,6 +479,7 @@ const Email = (props) => {
                             open={props.settings['palm1'].open === true}
                             footer={null}
                             width={700}
+                            closable={false}
                         >
                             <Spin spinning={loading} tip={tip} delay={500}>
                                 <Row>
@@ -594,8 +599,7 @@ const Email = (props) => {
                         </Modal>
                     </> : ''
             }
-            
-        </Spin>
+        </>
     )
 }
 
