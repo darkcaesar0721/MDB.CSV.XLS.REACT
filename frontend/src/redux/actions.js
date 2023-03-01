@@ -47,13 +47,6 @@ export const setEmailData = (rows = {}) => async (dispatch) => {
     });
 }
 
-export const download = (callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'controllers/download.php')
-        .then(function(resp) {
-            callback(resp);
-        })
-}
-
 export const getSettingData = () => async (dispatch) => {
     const result = await axios.get(APP_API_URL + 'controllers/json.php?action=get_setting_data');
 
@@ -87,4 +80,22 @@ export const setSettingData = (key = 'shai1', rows = {}, callback = function() {
     })).then(function(resp) {
         callback(resp);
     })
+}
+
+export const downloadCSV = (data, callback = function() {}) => async (dispatch) => {
+    axios.post(APP_API_URL + 'controllers/download_csv.php', qs.stringify(
+        data
+    ))
+        .then(function(resp) {
+            callback(resp);
+        })
+}
+
+export const downloadXLSTab = (data, callback = function() {}) => async (dispatch) => {
+    axios.post(APP_API_URL + 'controllers/download_xls.php', qs.stringify(
+        data
+    ))
+        .then(function(resp) {
+            callback(resp);
+        })
 }

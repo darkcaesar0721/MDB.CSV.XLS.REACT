@@ -237,5 +237,5 @@ const mapStateToProps = state => {
 
 export default connect(
     mapStateToProps,
-    { getPathData, setPathData, download }
+    { getPathData, setPathData }
 )(Path);

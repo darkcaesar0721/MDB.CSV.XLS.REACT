@@ -1,30 +1,229 @@
-import {message, Spin, Divider, Row, Col} from "antd";
-import React, {useState} from "react";
+import {message, Spin, Divider, Row, Col, Modal} from "antd";
+import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
-import {download} from "../redux/actions";
+import {downloadCSV, downloadXLSTab} from "../redux/actions";
+import DownloadStatusList from "./DownloadStatusList";
 import Email from "./Email";
 import FileList from "./FileList";
 import Path from "./Path";
 
 const Dashboard = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
-
     const [loading, setLoading] = useState(false);
     const [tip, setTip] = useState('');
+    const [open, setOpen] = useState(false);
+    const [downloadStatusInfos, setDownloadStatusInfos] = useState([]);
+    const [csvFiles, setCSVFiles] = useState([]);
+    const [xlsTabs, setXLSTabs] = useState([]);
+
+    useEffect(() => {
+        const folder_name = props.path.folder_name === undefined ? '' : props.path.folder_name;
+        
+        setCSVFiles((oldState) => {
+            const newState = [
+                {
+                    query: "003a27_00a_Alit_CA Windows Doors  ------------------------  >>",
+                    schedule: "0 Shai - W D, CA",
+                    schedule_index: -1,
+                    file: "00_ALL_" + folder_name + "_CA Window Door.csv",
+                    count: ''
+                },
+                {
+                    query: "003a27_01_Alit_ALL_Kitchen Bathroom Decks",
+                    schedule: "1 Shai KBD",
+                    schedule_index: -1,
+                    file: "01_ALL_" + folder_name + "_KitchenBathDecksRenovate.csv",
+                    count: ''
+                },
+                {
+                    query: "003a27_02_Alit_LA",
+                    schedule: "2 ALIT Shai LA",
+                    schedule_index: -1,
+                    file: "02_LA_" + folder_name + ".csv",
+                    count: ''
+                },
+                {
+                    query: "003a27_03_Alit_SD",
+                    schedule: "3 ALIT Shai SD",
+                    schedule_index: -1,
+                    file: "03_SD_" + folder_name + ".csv",
+                    count: ''
+                },
+                {
+                    query: "003a27_04_Alit_WA",
+                    schedule: "4 ALIT Shai WA",
+                    schedule_index: -1,
+                    file: "04_WA_" + folder_name + ".csv",
+                    count: ''
+                },
+                {
+                    query: "003a27_05_Alit_BAY South",
+                    schedule: "5 ALIT Shai BAY South",
+                    schedule_index: -1,
+                    file: "05_BAY_" + folder_name + " South.csv",
+                    count: ''
+                },
+                {
+                    query: "003a27_06_Alit_BAY North",
+                    schedule: "6 ALIT Shai BAY Noth",
+                    schedule_index: -1,
+                    file: "06_BAY_" + folder_name + " North.csv",
+                    count: ''
+                },
+                {
+                    query: "003a27_07_Alit_OR",
+                    schedule: "7 ALIT Shai OR",
+                    schedule_index: -1,
+                    file: "07_OR_" + folder_name + ".csv",
+                    count: ''
+                },
+                {
+                    query: "003a27_09_Alit_Houston",
+                    schedule: " 9 ALIT Shai TX HOU",
+                    schedule_index: -1,
+                    file: "09_TX_Houston_" + folder_name + ".csv",
+                    count: ''
+                },
+                {
+                    query: "003a27_10_Alit_Dallas",
+                    schedule: "10 ALIT Shai TX  DAL",
+                    schedule_index: -1,
+                    file: "10_TX_Dallas_" + folder_name + ".csv",
+                    count: ''
+                }
+            ]
+            return newState;
+        });
+
+        setXLSTabs((oldState) => {
+            const newState = [
+                {
+                    file: folder_name + "_PALM.xls",
+                    query: "003a10_Palm CON WA <<< PALM NEW>>>------------",
+                    sheet: "WA",
+                    schedule: "Palm CON WA",
+                    schedule_index: -1,
+                    count: ''
+                },
+                {
+                    file: folder_name + "_PALM.xls",
+                    query: "003a11_Palm CON BAY",
+                    sheet: "BAY",
+                    schedule: "Palm CON BAY",
+                    schedule_index: -1,
+                    count: ''
+                },
+                {
+                    file: folder_name + "_PALM.xls",
+                    query: "003a12_Palm CON SD",
+                    sheet: "SD",
+                    schedule: "Palm CON SD",
+                    schedule_index: -1,
+                    count: ''
+                },
+                {
+                    file: folder_name + "_PALM.xls",
+                    query: "003a13_Palm CON LA",
+                    sheet: "LA",
+                    schedule: "Palm CON LA",
+                    schedule_index: -1,
+                    count: ''
+                },
+                {
+                    file: folder_name + "_PALM.xls",
+                    query: "003a13a_Palm CON FL",
+                    sheet: "FL",
+                    schedule: "Palm CON FL",
+                    schedule_index: -1,
+                    count: ''
+                },
+            ];
+            return newState;
+        });
+    }, [props.path]);
 
     const downloadSubmit = function(form) {
         setLoading(true);
-        setTip('Wait for downloading data');
-        props.download(function(resp) {
-            setLoading(false);
 
+        const download_way = props.path.download_way;
+
+        switch(download_way) {
+            case 'all':
+                downloadCSV(0, function() {
+                    downloadXLSTab(0, function() {
+                        setLoading(false);
+                        messageApi.success('download success');
+                    });
+                });
+                break;
+
+            case 'csv':
+                downloadCSV(0, function() {
+                    setLoading(false);
+                    messageApi.success('download success');
+                });
+                break;
+
+            case 'xls':
+                downloadXLSTab(0, function() {
+                    setLoading(false);
+                    messageApi.success('download success');
+                });
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    const downloadCSV = function(index, callback = function() {}) {
+        props.downloadCSV(csvFiles[index], function(resp) {
             if (resp.data.status === 'error' || resp.data.status === 'warning') {
                 messageApi.error(resp.data.description);
             } else {
-                props.getPathData();
-                messageApi.success('download success'); 
+                updateCSVFile(index, resp.data);
+
+                if (index + 1 === csvFiles.length) {
+                    callback();
+                    return;
+                } else {
+                    downloadCSV(index + 1, callback);
+                }
             }
-        })
+        });
+    }
+
+    const updateCSVFile = function(index, data) {
+        setCSVFiles((oldState) => {
+            return [...oldState].map((c, i) => {
+                return (i === index) ? data : c;
+            });
+        });
+    }
+
+    const downloadXLSTab = function(index, callback = function() {}) {
+        props.downloadXLSTab(xlsTabs[index], function(resp) {
+            if (resp.data.status === 'error' || resp.data.status === 'warning') {
+                messageApi.error(resp.data.description);
+            } else {
+                updateXLSTab(index, resp.data);
+
+                if (index + 1 === csvFiles.length) {
+                    callback();
+                    return;
+                } else {
+                    downloadCSV(index + 1, callback);
+                }
+            }
+        });
+    }
+
+    const updateXLSTab = function(index, data) {
+        setXLSTabs((oldState) => {
+            return [...oldState].map((c, i) => {
+                return (i === index) ? data : c;
+            });
+        });
     }
 
     const folder_name = props.path.folder_name === undefined ? '' : props.path.folder_name;
@@ -54,6 +253,19 @@ const Dashboard = (props) => {
                     />
                 </Col>
             </Row>
+            <Modal
+                title="DOWNLOAD STATUS LIST"
+                open={open}
+                header={null}
+                footer={null}
+                closable={false}
+                width={700}
+            >
+                <DownloadStatusList
+                    downloadStatusInfos={downloadStatusInfos}
+                    setOpen={setOpen}
+                />
+            </Modal>
         </Spin>
     )
 }
@@ -64,5 +276,5 @@ const mapStateToProps = state => {
 
 export default connect(
     mapStateToProps,
-    { download }
+    { downloadCSV, downloadXLSTab }
 )(Dashboard);
