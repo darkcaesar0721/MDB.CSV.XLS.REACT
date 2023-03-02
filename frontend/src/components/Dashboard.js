@@ -1,7 +1,7 @@
 import {message, Spin, Divider, Row, Col, Modal, Button} from "antd";
 import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
-import {downloadCSV, downloadXLSTab} from "../redux/actions";
+import {downloadCSV, downloadXLSTab, getPathData, uploadStatus} from "../redux/actions";
 import CSVDownloadStatusList from "./DownloadStatus/CSVList";
 import XLSTabDownloadStatusList from "./DownloadStatus/XLSTabList";
 import Email from "./Email";
@@ -12,13 +12,25 @@ const Dashboard = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
     const [loading, setLoading] = useState(false);
     const [tip, setTip] = useState('');
+    const [modalLoading, setModalLoading] = useState(false);
+    const [modalTip, setModalTip] = useState('');
     const [open, setOpen] = useState(false);
-    const [csvDownloadStatus, setCSVDownloadStatus] = useState([]);
-    const [xlsTabDownloadStatus, setXLSTabDownloadStatus] = useState([]);
     const [csvFiles, setCSVFiles] = useState([]);
     const [xlsTabs, setXLSTabs] = useState([]);
+    const [isClose, setIsClose] = useState(false);
+    const [downloadStatus, setDownloadStatus] = useState(false);
 
-    useEffect(() => {
+    useEffect(function() {
+        init_download_status();
+    }, [props.path]);
+
+    useEffect(function() {
+        if (downloadStatus === true) {
+            uploadStatus();
+        }
+    }, [downloadStatus])
+
+    const init_download_status = function() {
         const folder_name = props.path.folder_name === undefined ? '' : props.path.folder_name;
         
         setCSVFiles((oldState) => {
@@ -28,14 +40,15 @@ const Dashboard = (props) => {
                     schedule: "0 Shai - W D, CA",
                     schedule_index: -1,
                     file: "00_ALL_" + folder_name + "_CA Window Door.csv",
-                    count: ''
+                    count: '',
+                    status: props.path.download_way === 'all' || props.path.download_way === 'csv' ? 'loading' : '', 
                 },
                 {
                     query: "003a27_01_Alit_ALL_Kitchen Bathroom Decks",
                     schedule: "1 Shai KBD",
                     schedule_index: -1,
                     file: "01_ALL_" + folder_name + "_KitchenBathDecksRenovate.csv",
-                    count: ''
+                    count: '',
                 },
                 {
                     query: "003a27_02_Alit_LA",
@@ -105,7 +118,8 @@ const Dashboard = (props) => {
                     sheet: "WA",
                     schedule: "Palm CON WA",
                     schedule_index: -1,
-                    count: ''
+                    count: '',
+                    status: props.path.download_way === 'xls' ? 'loading' : '', 
                 },
                 {
                     file: folder_name + "_PALM.xls",
@@ -142,35 +156,31 @@ const Dashboard = (props) => {
             ];
             return newState;
         });
-    }, [props.path]);
+    }
 
     const downloadSubmit = function(form) {
         setLoading(true);
+        setOpen(true);
+        setIsClose(false);
+        setDownloadStatus(false);
 
         const download_way = props.path.download_way;
-
         switch(download_way) {
             case 'all':
                 downloadCSV(0, function() {
-                    downloadXLSTab(0, function() {
-                        setLoading(false);
-                        messageApi.success('download success');
-                    });
+                    let data = xlsTabs[0];
+                    data['status'] = 'loading';
+                    updateXLSTab(0, data);
+                    downloadXLSTab(0);
                 });
                 break;
 
             case 'csv':
-                downloadCSV(0, function() {
-                    setLoading(false);
-                    messageApi.success('download success');
-                });
+                downloadCSV(0);
                 break;
 
             case 'xls':
-                downloadXLSTab(0, function() {
-                    setLoading(false);
-                    messageApi.success('download success');
-                });
+                downloadXLSTab(0);
                 break;
 
             default:
@@ -178,52 +188,94 @@ const Dashboard = (props) => {
         }
     }
 
-    const downloadCSV = function(index, callback = function() {}) {
+    const uploadStatus = function() {
+        let data = {};
+        if (props.path.download_way === 'all' || props.path.download_way === 'csv') data.csv = csvFiles;
+        if (props.path.download_way === 'all' || props.path.download_way === 'xls') data.xls = xlsTabs;
+
+        setModalLoading(true);
+        setModalTip('Upload count status....');
+        props.uploadStatus(data, function() {
+            setModalLoading(false);
+            downloadFinish();
+        })
+    }
+
+    const downloadFinish = function() {
+        init_download_status();
+
+        messageApi.success('dwonload success');
+        setLoading(false);
+        setIsClose(true);
+        setOpen(false);
+
+        props.getPathData();
+    }
+
+    const downloadCSV = function(index, callback = undefined) {
         props.downloadCSV(index, csvFiles[index], function(resp) {
             if (resp.data.status === 'error' || resp.data.status === 'warning') {
                 messageApi.error(resp.data.description);
             } else {
-                updateCSVFile(index, resp.data.csv);
+                resp.data.csv.status = 'complete';
 
                 if (index + 1 === csvFiles.length) {
-                    callback();
+                    updateCSVFile(index, resp.data.csv);
+
+                    if (callback === undefined) setDownloadStatus(true);
+                    else callback();
+
                     return;
                 } else {
+                    let nextData = csvFiles[index + 1];
+                    nextData.status = 'loading';
+
+                    updateCSVFile(index, resp.data.csv, nextData);
+
                     downloadCSV(index + 1, callback);
                 }
             }
         });
     }
 
-    const updateCSVFile = function(index, data) {
+    const updateCSVFile = function(index, data, nextData = undefined) {
         setCSVFiles((oldState) => {
             return [...oldState].map((c, i) => {
-                return (i === index) ? data : c;
+                return (i === index) ? data : ((nextData !== undefined && i === index + 1) ? nextData : c);
             });
         });
     }
 
-    const downloadXLSTab = function(index, callback = function() {}) {
+    const downloadXLSTab = function(index, callback = undefined) {
         props.downloadXLSTab(index, xlsTabs[index], function(resp) {
             if (resp.data.status === 'error' || resp.data.status === 'warning') {
                 messageApi.error(resp.data.description);
             } else {
-                updateXLSTab(index, resp.data.tab);
-
+                resp.data.tab.status = 'complete';
+                
                 if (index + 1 === xlsTabs.length) {
-                    callback();
+                    updateXLSTab(index, resp.data.tab);
+                    
+                    if (callback === undefined) setDownloadStatus(true);
+                    else callback();
+
                     return;
                 } else {
+                    let nextData = xlsTabs[index + 1];
+                    nextData.status = 'loading';
+                    updateXLSTab(index, resp.data.tab, nextData);
+
                     downloadXLSTab(index + 1, callback);
                 }
             }
         });
     }
 
-    const updateXLSTab = function(index, data) {
+    const updateXLSTab = function(index, data, nextData = undefined) {
         setXLSTabs((oldState) => {
-            return [...oldState].map((c, i) => {
-                return (i === index) ? data : c;
+            let newState = [...oldState];
+            return newState.map((c, i) => {
+                return (i === index) ? data : ((nextData !== undefined && i === index + 1) ? nextData : c);
             });
         });
     }
@@ -263,23 +315,25 @@ const Dashboard = (props) => {
                 closable={false}
                 width={900}
             >
-                <Row>
-                    <Col span={2}>
-                        <Button type="primary" onClick={(e) => {setOpen(false)}}>Close Window</Button>
-                    </Col>
-                </Row>
-                {
-                    props.path.download_way !== undefined && (props.path.download_way === 'all' || props.path.download_way === 'csv') ?
-                        <CSVDownloadStatusList
-                            csvDownloadStatus={csvDownloadStatus}
-                        /> : ''
-                }
-                {
-                    props.path.download_way !== undefined && (props.path.download_way === 'all' || props.path.download_way === 'xls') ?
-                        <XLSTabDownloadStatusList
-                            xlsTabDownloadStatus={xlsTabDownloadStatus}
-                        /> : ''
-                }
+                <Spin spinning={modalLoading} tip={modalTip} delay={500}>
+                    <Row>
+                        <Col span={2}>
+                            <Button type="primary" disabled={!isClose} onClick={(e) => {setOpen(false)}}>Close Window</Button>
+                        </Col>
+                    </Row>
+                    {
+                        props.path.download_way !== undefined && (props.path.download_way === 'all' || props.path.download_way === 'csv') ?
+                            <CSVDownloadStatusList
+                                csvFiles={csvFiles}
+                            /> : ''
+                    }
+                    {
+                        props.path.download_way !== undefined && (props.path.download_way === 'all' || props.path.download_way === 'xls') ?
+                            <XLSTabDownloadStatusList
+                                xlsTabs={xlsTabs}
+                            /> : ''
+                    }
+                </Spin>
             </Modal>
         </Spin>
     )
@@ -291,5 +345,5 @@ const mapStateToProps = state => {
 
 export default connect(
     mapStateToProps,
-    { downloadCSV, downloadXLSTab }
+    { downloadCSV, downloadXLSTab, getPathData, uploadStatus }
 )(Dashboard);

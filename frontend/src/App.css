@@ -44,3 +44,61 @@ label, span, div, input {
 .download-group-selected {
   background-color: #d7d2d2;
 }
+
+.antd-custom-table .ant-table-tbody{
+  padding-left: 0.3rem !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  font-size: 0.7rem;
+  border-bottom: solid 2px #d1d1d1 !important;
+  border-right: solid 1px #d1d1d1 !important;
+}
+.antd-custom-table .ant-table-tbody > tr > td{
+  padding-left: 0.3rem !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  font-size: 0.7rem;
+  border-bottom: solid 1px #d1d1d1 !important;
+  border-right: solid 1px #d1d1d1 !important;
+  font-weight: bolder;
+}
+.antd-custom-table .ant-table-tbody > tr > td > input{
+  font-size: 0.7rem;
+}
+
+.antd-custom-table .ant-table-tbody > tr > td > span[role=img]{
+  padding-top: 0.3rem;
+  font-size: 1.5rem;
+}
+
+.antd-custom-table .ant-table-tbody > tr > td > button span{
+  font-size: 0.7rem;
+}
+
+.antd-custom-table .ant-table-tbody > tr > td > button span{
+  font-size: 0.7rem;
+}
+
+.antd-custom-table .ant-table-thead > tr > th{
+  padding-left: 0.3rem !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  font-size: 0.75rem;
+  border-bottom: solid 1px #d1d1d1 !important;
+  border-right: solid 1px #d1d1d1 !important;
+}
+
+.antd-custom-table .ant-table-tbody > tr > td button{
+  padding: 0.3rem !important;
+}
+
+.antd-custom-table .ant-checkbox-wrapper {
+  width: 20px !important;
+  height: 20px !important;
+  font-size: 10px !important;
+}
+
+.antd-custom-table .ant-radio-button-wrapper {
+  height: 20px;
+  line-height: 20px;
+}

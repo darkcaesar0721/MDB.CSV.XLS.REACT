@@ -43,7 +43,7 @@ try {
 
         $mySpreadsheet->removeSheetByIndex(0);
     } else {
-        $mySpreadsheet = $reader->load($files[0]);
+        $mySpreadsheet = $reader->load($folder_path . "\\" . $folder . '_PALM.xls');
     }
 
     $worksheets = [];
@@ -55,10 +55,8 @@ try {
     $worksheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($mySpreadsheet, $xls['sheet']);
     $mySpreadsheet->addSheet($worksheet, $index);
 
-    
-
     $data = [];
-    if ($index === 3)
+    if ($index * 1 === 3)
         array_push($data, ['Date', 'Phone', 'Name', 'Address', 'City', 'State', 'Zip', 'Job Group', 'COUNTY.COUNTY']);
     else
         array_push($data, ['Date', 'Phone', 'Name', 'Address', 'City', 'State', 'Zip', 'Job Group', 'COUNTY']);
@@ -67,7 +65,7 @@ try {
     while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
         if ($row['Phone'] == $xls['pre_phone']) break;
 
-        if ($index === 3)
+        if ($index * 1 === 3)
             array_push($data, [$row['Date'], $row['Phone'], $row['Name'], $row['Address'], $row['City'], $row['State'], $row['Zip'], $row['Job Group'], $row['COUNTY.COUNTY']]);
         else
             array_push($data, [$row['Date'], $row['Phone'], $row['Name'], $row['Address'], $row['City'], $row['State'], $row['Zip'], $row['Job Group'], $row['COUNTY']]);
@@ -83,16 +81,11 @@ try {
 
     $mySpreadsheet->setActiveSheetIndex(0);
 
-    if ($index > 3) {
-        $mySpreadsheet->removeSheetByIndex(4);
-    }
-
     // Save to file.
     $writer = new PhpOffice\PhpSpreadsheet\Writer\Xls($mySpreadsheet);
     $writer->save($folder_path . "\\" . $folder . '_PALM.xls');
 
     echo json_encode(array('status' => 'success', 'tab' => $xls));  
-
 } catch(PDOException $e) {
     echo json_encode(array('status' => 'error', 'description' => 'mdb file path wrong'));
     exit;

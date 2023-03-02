@@ -16,11 +16,23 @@ const CSVDownloadStatusList = (props) => {
             key: 'no',
             dataIndex: 'no',
             width: 30,
+            render: (_, r) => {
+                let number = 0;
+                props.csvFiles.forEach((c, i) => {
+                    if (c.query === r.query) {
+                        number = i + 1;
+                        return;
+                    }
+                })
+                return (
+                    <span>{number}</span>
+                )
+            }
         },
         {
             title: 'Status',
             key: 'status',
-            width: 90,
+            width: 60,
             render: (_, r) => {
                 return (
                     <>
@@ -51,7 +63,7 @@ const CSVDownloadStatusList = (props) => {
             key: 'query',
         },
         {
-            title: 'Upload Count',
+            title: 'Count',
             dataIndex: 'count',
             key: 'count',
         },
@@ -73,7 +85,7 @@ const CSVDownloadStatusList = (props) => {
         <>
             <Row>
                 <Col span={24}>
-                    <Divider><h2>CSV FILE DOWNLOAD STATUS LIST</h2></Divider>
+                    <Divider><h4>CSV FILE DOWNLOAD STATUS LIST</h4></Divider>
                 </Col>
             </Row>
             <Row style={{marginTop: '0.4rem'}}>
@@ -82,7 +94,7 @@ const CSVDownloadStatusList = (props) => {
                         bordered={true}
                         size="small"
                         columns={columns}
-                        dataSource={props.csvDownloadStatus}
+                        dataSource={props.csvFiles}
                         pagination={tableParams.pagination}
                         onChange={handleTableChange}
                         className="antd-custom-table"

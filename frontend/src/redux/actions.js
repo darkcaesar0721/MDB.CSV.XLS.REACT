@@ -101,3 +101,12 @@ export const downloadXLSTab = (index, data, callback = function() {}) => async (
             callback(resp);
         })
 }
+
+export const uploadStatus = (data, callback = function() {}) => async (dispatch) => {
+    axios.post(APP_API_URL + 'controllers/schedule.php', qs.stringify({
+        data
+    }))
+        .then(function(resp) {
+            callback(resp);
+        })
+}
