@@ -1,5 +1,5 @@
-import {Button, Col, Form, Input, Modal, Row, Spin} from "antd";
-import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
+import {Button, Col, Form, Input, Modal, Row, Spin, Switch} from "antd";
+import {CheckOutlined, CloseOutlined, MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import React from "react";
 
 const layout = {
@@ -31,7 +31,7 @@ const Palm1 = function(props) {
             centered
             open={props.settings['palm1'].open === true}
             footer={null}
-            width={700}
+            width={900}
             closable={false}
         >
             <Spin spinning={props.loading} tip={props.tip} delay={500}>
@@ -122,6 +122,127 @@ const Palm1 = function(props) {
                                                 icon={<PlusOutlined />}
                                             >
                                                 Add Receiver Gmail
+                                            </Button>
+                                            <Form.ErrorList errors={errors} />
+                                        </Form.Item>
+                                    </>
+                                )}
+                            </Form.List>
+                            <Form.Item
+                                name={['isWhatsApp']}
+                                label="WhatsApp"
+                            >
+                                <Switch
+                                    checkedChildren={<CheckOutlined />}
+                                    unCheckedChildren={<CloseOutlined />}
+                                    size="large"
+                                    checked={props.isWhatsApp}
+                                    onChange={props.handleIsWhatsAppChange}
+                                    disabled={!(props.whatsapp.isWhatsApp === undefined || props.whatsapp.isWhatsApp === true || props.whatsapp.isWhatsApp === 'true')}
+                                />
+                            </Form.Item>
+                            <Form.Item
+                                name={['whatsapp_message']}
+                                label="WhatsApp Send Message"
+                            >
+                                <Input.TextArea disabled={!props.isWhatsApp} showCount autoSize={{ minRows: 3, maxRows: 10 }}/>
+                            </Form.Item>
+                            <Form.List
+                                name="whatsapp_people"
+                            >
+                                {(fields, { add, remove }, { errors }) => (
+                                    <>
+                                        {fields.map((field, index) => (
+                                            <Form.Item
+                                                {...(index === 0 ? layout : formItemLayoutWithOutLabel)}
+                                                label={index === 0 ? 'WhatsApp Single People' : ''}
+                                                required={false}
+                                                key={field.key}
+                                            >
+                                                <Form.Item
+                                                    {...field}
+                                                    noStyle
+                                                >
+                                                    <Input
+                                                        placeholder="WhatsApp Single Person"
+                                                        style={{
+                                                            width: '95%',
+                                                        }}
+                                                        disabled={!props.isWhatsApp}
+                                                    />
+                                                </Form.Item>
+                                                {fields.length > 1 ? (
+                                                    <MinusCircleOutlined
+                                                        className="dynamic-delete-button"
+                                                        onClick={() => remove(field.name)}
+                                                        disabled={!props.isWhatsApp}
+                                                    />
+                                                ) : null}
+                                            </Form.Item>
+                                        ))}
+                                        <Form.Item>
+                                            <Button
+                                                type="dashed"
+                                                onClick={() => add()}
+                                                style={{
+                                                    width: '30%',
+                                                    marginLeft: '14%'
+                                                }}
+                                                icon={<PlusOutlined />}
+                                                disabled={!props.isWhatsApp}
+                                            >
+                                                Add Single Person
+                                            </Button>
+                                            <Form.ErrorList errors={errors} />
+                                        </Form.Item>
+                                    </>
+                                )}
+                            </Form.List>
+                            <Form.List
+                                name="whatsapp_groups"
+                            >
+                                {(fields, { add, remove }, { errors }) => (
+                                    <>
+                                        {fields.map((field, index) => (
+                                            <Form.Item
+                                                {...(index === 0 ? layout : formItemLayoutWithOutLabel)}
+                                                label={index === 0 ? 'WhatsApp Groups' : ''}
+                                                required={false}
+                                                key={field.key}
+                                            >
+                                                <Form.Item
+                                                    {...field}
+                                                    noStyle
+                                                >
+                                                    <Input
+                                                        placeholder="WhatsApp Group"
+                                                        style={{
+                                                            width: '95%',
+                                                        }}
+                                                        disabled={!props.isWhatsApp}
+                                                    />
+                                                </Form.Item>
+                                                {fields.length > 1 ? (
+                                                    <MinusCircleOutlined
+                                                        className="dynamic-delete-button"
+                                                        onClick={() => remove(field.name)}
+                                                        disabled={!props.isWhatsApp}
+                                                    />
+                                                ) : null}
+                                            </Form.Item>
+                                        ))}
+                                        <Form.Item>
+                                            <Button
+                                                type="dashed"
+                                                onClick={() => add()}
+                                                style={{
+                                                    width: '30%',
+                                                    marginLeft: '14%'
+                                                }}
+                                                icon={<PlusOutlined />}
+                                                disabled={!props.isWhatsApp}
+                                            >
+                                                Add Group
                                             </Button>
                                             <Form.ErrorList errors={errors} />
                                         </Form.Item>

@@ -1,7 +1,15 @@
 import {message, Spin, Row, Col, Input, Form, Button, Popconfirm, Modal} from "antd";
 import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
-import {getEmailData, setEmailData, getSettingData, setSettingData, setSettingDataByMail, sendEmail} from "../redux/actions";
+import {
+    getEmailData,
+    setEmailData,
+    getSettingData,
+    setSettingData,
+    setSettingDataByMail,
+    sendEmail,
+    getWhatsApp
+} from "../redux/actions";
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import Shai1 from "./EmailGroup/Shai1";
 import Shai2 from "./EmailGroup/Shai2";
@@ -18,20 +26,39 @@ const Email = (props) => {
 
     const [loading, setLoading] = useState(false);
     const [tip, setTip] = useState('');
+    const [shai2IsWhatsApp, setShai2IsWhatsApp] = useState(false);
+    const [palm1IsWhatsApp, setPalm1IsWhatsApp] = useState(false);
 
     useEffect(function() {
+        props.getWhatsApp();
         props.getEmailData();
         props.getSettingData();
     }, []);
 
     useEffect(function() {
-        emailForm.setFieldsValue(props.email);
-        
-        shai1Form.setFieldsValue(props.settings.shai1);
-        shai2Form.setFieldsValue(props.settings.shai2);
-        palm1Form.setFieldsValue(props.settings.palm1);
+        if (props.settings.shai1 !== undefined) {
+            emailForm.setFieldsValue(props.email);
+            //
+            shai1Form.setFieldsValue(props.settings.shai1);
 
-        setEmail(props.email);
+            let shai2 = {...props.settings.shai2};
+            shai2.isWhatsApp = ((props.whatsapp.isWhatsApp === undefined || props.whatsapp.isWhatsApp === true || props.whatsapp.isWhatsApp === 'true') && (shai2.isWhatsApp === true || shai2.isWhatsApp === 'true')) ? true : false;
+            shai2.whatsapp_message = shai2.whatsapp_message === undefined ? props.whatsapp.default_message : shai2.whatsapp_message;
+            shai2.whatsapp_people = shai2.whatsapp_people === undefined ? [''] : shai2.whatsapp_people;
+            shai2.whatsapp_groups = shai2.whatsapp_groups === undefined ? [''] : shai2.whatsapp_groups;
+            setShai2IsWhatsApp(shai2.isWhatsApp);
+            shai2Form.setFieldsValue(shai2);
+
+            let palm1 = props.settings.palm1;
+            palm1.isWhatsApp = ((props.whatsapp.isWhatsApp === undefined || props.whatsapp.isWhatsApp === true || props.whatsapp.isWhatsApp === 'true') && (palm1.isWhatsApp === true || palm1.isWhatsApp === 'true')) ? true : false;
+            palm1.whatsapp_message = palm1.whatsapp_message === undefined || palm1.whatsapp_message === '' ? props.whatsapp.default_message : palm1.whatsapp_message;
+            palm1.whatsapp_people = palm1.whatsapp_people === undefined || palm1.whatsapp_people === '' ? [''] : palm1.whatsapp_people;
+            palm1.whatsapp_groups = palm1.whatsapp_groups === undefined || palm1.whatsapp_groups === '' ? [''] : palm1.whatsapp_groups;
+            setPalm1IsWhatsApp(palm1.isWhatsApp);
+            palm1Form.setFieldsValue(palm1);
+
+            setEmail(props.email);
+        }
     }, [props.email, props.settings]);
 
     const handleShai1SendSubmit = function(form) {
@@ -44,24 +71,37 @@ const Email = (props) => {
         });
     }
 
-    const handleShai2SendSubmit = function(form) {
+    const handleShai2SendSubmit = function() {
         setLoading(true);
         setTip('wait for sending shai2 gmail');
-        props.sendEmail('shai2', {subject: form.subject, receivers: form.receivers}, function() {
+
+        let data = shai2Form.getFieldsValue();
+        delete data.body;  delete data.sendBtn; delete data.files;
+        props.sendEmail('shai2', data, function() {
             setLoading(false);
             messageApi.success('Shai2 gmail send success')
             props.getSettingData();
         });
     }
 
-    const handlePalm1SendSubmit = function(form) {
+    const handlePalm1SendSubmit = function() {
         setLoading(true);
         setTip('wait for sending palm1 gmail');
-        props.sendEmail('palm1', {subject: form.subject, receivers: form.receivers}, function() {
+        props.sendEmail('palm1', palm1Form.getFieldsValue(), function() {
             setLoading(false);
             messageApi.success('Palm1 gmail send success')
             props.getSettingData();
         });
+    }
+
+    const handleShai2IsWhatsAppChange = function(v) {
+        shai2Form.setFieldsValue(Object.assign({...shai2Form.getFieldsValue()}, {isWhatsApp: v}));
+        setShai2IsWhatsApp(v);
+    }
+
+    const handlePalm1IsWhatsAppChange = function(v) {
+        palm1Form.setFieldsValue(Object.assign({...palm1Form.getFieldsValue()}, {isWhatsApp: v}));
+        setPalm1IsWhatsApp(v);
     }
 
     const handleEmailChange = function(name, e) {
@@ -212,6 +252,9 @@ const Email = (props) => {
                             handleSendSubmit={handleShai2SendSubmit}
                             form={shai2Form}
                             handleCancelClick={handleCancelClick}
+                            handleIsWhatsAppChange={handleShai2IsWhatsAppChange}
+                            isWhatsApp={shai2IsWhatsApp}
+                            whatsapp={props.whatsapp}
                         />
                         <Palm1
                             settings={props.settings}
@@ -220,6 +263,9 @@ const Email = (props) => {
                             handleSendSubmit={handlePalm1SendSubmit}
                             form={palm1Form}
                             handleCancelClick={handleCancelClick}
+                            handleIsWhatsAppChange={handlePalm1IsWhatsAppChange}
+                            isWhatsApp={palm1IsWhatsApp}
+                            whatsapp={props.whatsapp}
                         />
                     </> : ''
             }
@@ -228,10 +274,10 @@ const Email = (props) => {
 }
 
 const mapStateToProps = state => {
-    return { email: state.email, settings: state.settings };
+    return { email: state.email, settings: state.settings, whatsapp: state.whatsapp };
 };
 
 export default connect(
     mapStateToProps,
-    { getEmailData, setEmailData, getSettingData, setSettingData, setSettingDataByMail, sendEmail }
+    { getEmailData, setEmailData, getSettingData, setSettingData, setSettingDataByMail, sendEmail, getWhatsApp }
 )(Email);

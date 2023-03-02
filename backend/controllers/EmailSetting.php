@@ -6,9 +6,7 @@ class EmailSetting
 {
     public $file_path = "db/emailSetting.json";
 
-    public $init_data = [];
-
-    public $email_setting = [
+    public $init_data = [
         'shai1' => [
             'open' => false,
             'subject' => '',
@@ -43,6 +41,8 @@ class EmailSetting
             'whatsapp_groups' => [''],
         ],
     ];
+
+    public $email_setting;
 
     public function init()
     {
