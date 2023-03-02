@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ERROR);
 
 $path_file = '../db/path.json';
 $path = json_decode(file_get_contents($path_file));

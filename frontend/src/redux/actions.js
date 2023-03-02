@@ -8,7 +8,7 @@ import {
 import { APP_API_URL } from "../constants";
 
 export const getPathData = () => async (dispatch) => {
-    const result = await axios.get(APP_API_URL + 'controllers/json.php?action=get_path_data');
+    const result = await axios.get(APP_API_URL + 'api.php?class=Path&fn=get');
 
     dispatch({
         type: INIT_PATH_DATA,
@@ -17,7 +17,7 @@ export const getPathData = () => async (dispatch) => {
 }
 
 export const setPathData = (rows = {}) => async (dispatch) => {
-    const result = await axios.post(APP_API_URL + 'controllers/json.php?action=set_path_data', qs.stringify({
+    const result = await axios.post(APP_API_URL + 'api.php?class=Path&fn=update', qs.stringify({
         rows
     }));
 
@@ -28,7 +28,7 @@ export const setPathData = (rows = {}) => async (dispatch) => {
 }
 
 export const getEmailData = () => async (dispatch) => {
-    const result = await axios.get(APP_API_URL + 'controllers/json.php?action=get_email_data');
+    const result = await axios.get(APP_API_URL + 'api.php?class=EmailConfig&fn=get');
 
     dispatch({
         type: INIT_EMAIL_DATA,
@@ -37,7 +37,7 @@ export const getEmailData = () => async (dispatch) => {
 }
 
 export const setEmailData = (rows = {}) => async (dispatch) => {
-    const result = await axios.post(APP_API_URL + 'controllers/json.php?action=set_email_data', qs.stringify({
+    const result = await axios.post(APP_API_URL + 'api.php?class=EmailConfig&fn=update', qs.stringify({
         rows
     }));
 
@@ -48,7 +48,7 @@ export const setEmailData = (rows = {}) => async (dispatch) => {
 }
 
 export const getSettingData = () => async (dispatch) => {
-    const result = await axios.get(APP_API_URL + 'controllers/json.php?action=get_setting_data');
+    const result = await axios.get(APP_API_URL + 'api.php?class=EmailSetting&fn=get');
 
     dispatch({
         type: INIT_SETTING_DATA,
@@ -57,15 +57,19 @@ export const getSettingData = () => async (dispatch) => {
 }
 
 export const setSettingDataByMail = (name = 'shai1', callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'controllers/mail.php?action=set_setting_data', qs.stringify({
-        name,
-    })).then(function(resp) {
+    let fn = '';
+
+    if (name === 'shai1') {fn = 'set_shai1_setting';}
+    if (name === 'shai2') {fn = 'set_shai2_setting';}
+    if (name === 'palm1') {fn = 'set_palm1_setting';}
+
+    axios.post(APP_API_URL + 'api.php?class=Mail&fn=' + fn).then(function(resp) {
         callback(resp);
     })
 }
 
 export const sendEmail = (name = 'shai1', rows = {}, callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'controllers/mail.php?action=send_mail', qs.stringify({
+    axios.post(APP_API_URL + 'api.php?class=Mail&fn=send', qs.stringify({
         name,
         rows,
     })).then(function(resp) {
@@ -74,7 +78,7 @@ export const sendEmail = (name = 'shai1', rows = {}, callback = function() {}) =
 }
 
 export const setSettingData = (key = 'shai1', rows = {}, callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'controllers/json.php?action=set_setting_data', qs.stringify({
+    axios.post(APP_API_URL + 'api.php?class=EmailSetting&fn=update', qs.stringify({
         key,
         rows
     })).then(function(resp) {
@@ -83,7 +87,7 @@ export const setSettingData = (key = 'shai1', rows = {}, callback = function() {
 }
 
 export const downloadCSV = (index, data, callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'controllers/download_csv.php', qs.stringify({
+    axios.post(APP_API_URL + 'controllers/DownloadCSV.php', qs.stringify({
         index,
         data
     }))
@@ -93,7 +97,7 @@ export const downloadCSV = (index, data, callback = function() {}) => async (dis
 }
 
 export const downloadXLSTab = (index, data, callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'controllers/download_xls.php', qs.stringify({
+    axios.post(APP_API_URL + 'controllers/DownloadXLS.php', qs.stringify({
         index,
         data
     }))
@@ -103,7 +107,7 @@ export const downloadXLSTab = (index, data, callback = function() {}) => async (
 }
 
 export const uploadStatus = (data, callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'controllers/schedule.php', qs.stringify({
+    axios.post(APP_API_URL + 'api.php?class=Schedule&fn=upload', qs.stringify({
         data
     }))
         .then(function(resp) {
