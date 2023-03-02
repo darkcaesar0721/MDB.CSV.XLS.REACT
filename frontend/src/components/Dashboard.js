@@ -7,6 +7,7 @@ import XLSTabDownloadStatusList from "./DownloadStatus/XLSTabList";
 import Email from "./Email";
 import FileList from "./FileList";
 import Path from "./Path";
+import WhatsApp from "./WhatsApp";
 
 const Dashboard = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
@@ -301,6 +302,7 @@ const Dashboard = (props) => {
                         setTip={setTip}
                         messageApi={messageApi}
                     />
+                    <WhatsApp/>
                     <FileList
                         path={props.path}
                         folder_name={folder_name}

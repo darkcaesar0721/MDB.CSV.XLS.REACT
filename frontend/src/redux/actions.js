@@ -4,6 +4,7 @@ import {
     INIT_PATH_DATA,
     INIT_EMAIL_DATA,
     INIT_SETTING_DATA,
+    INIT_WHATSAPP_DATA
 } from "./actionTypes";
 import { APP_API_URL } from "../constants";
 
@@ -113,4 +114,26 @@ export const uploadStatus = (data, callback = function() {}) => async (dispatch)
         .then(function(resp) {
             callback(resp);
         })
+}
+
+export const getWhatsApp = () => async (dispatch) => {
+    const result = await axios.get(APP_API_URL + 'api.php?class=WhatsApp&fn=get');
+
+    dispatch({
+        type: INIT_WHATSAPP_DATA,
+        data: result.data
+    });
+}
+
+export const updateWhatsApp = (rows, callback = function() {}) => async (dispatch) => {
+    const result = await axios.post(APP_API_URL + 'api.php?class=WhatsApp&fn=update', qs.stringify({
+        rows
+    }));
+
+    dispatch({
+        type: INIT_WHATSAPP_DATA,
+        data: result.data
+    });
+
+    callback();
 }
