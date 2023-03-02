@@ -444,6 +444,10 @@ class Mail
         }
 
         $this->email_setting_obj->save($this->email_setting);
+
+        if ($this->whatsapp->isWhatsApp == '' || $this->whatsapp->isWhatsApp == true || $this->whatsapp->isWhatsApp == 'true')
+            $this->whatsapp_obj->send($this->email_setting->$name);
+
         echo json_encode(array('status' => 'success'));
         exit;
     }

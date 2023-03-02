@@ -14,6 +14,8 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import Shai1 from "./EmailGroup/Shai1";
 import Shai2 from "./EmailGroup/Shai2";
 import Palm1 from "./EmailGroup/Palm1";
+import axios from "axios";
+import {APP_API_URL} from "../constants";
 
 const Email = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
@@ -72,26 +74,73 @@ const Email = (props) => {
     }
 
     const handleShai2SendSubmit = function() {
-        setLoading(true);
-        setTip('wait for sending shai2 gmail');
-
         let data = shai2Form.getFieldsValue();
         delete data.body;  delete data.sendBtn; delete data.files;
-        props.sendEmail('shai2', data, function() {
-            setLoading(false);
-            messageApi.success('Shai2 gmail send success')
-            props.getSettingData();
-        });
+
+        if (props.whatsapp.isWhatsApp === undefined || props.whatsapp.isWhatsApp === true || props.whatsapp.isWhatsApp === 'true') {
+            setLoading(true);
+            setTip('Checking WhatsApp Setting');
+            axios.post(APP_API_URL + 'api.php?class=WhatsApp&fn=set_groups').then((resp) => {
+                if (typeof resp.data === "string") {
+                    setLoading(false);
+                    messageApi.error("Please confirm whatsapp setting");
+                    return;
+                } else if (resp.data.error) {
+                    setLoading(false);
+                    messageApi.error(resp.data.error);
+                    return;
+                }
+                setTip('Sending Gmail and WhatsApp Message');
+                props.sendEmail('shai2', data, function() {
+                    setLoading(false);
+                    messageApi.success('Shai2 Gmail and WhatsApp send success');
+                    props.getSettingData();
+                });
+            });
+        } else {
+            setLoading(true);
+            setTip('Sending Gmail');
+            props.sendEmail('shai2', data, function() {
+                setLoading(false);
+                messageApi.success('Shai2 Gmail send success');
+                props.getSettingData();
+            });
+        }
     }
 
     const handlePalm1SendSubmit = function() {
-        setLoading(true);
-        setTip('wait for sending palm1 gmail');
-        props.sendEmail('palm1', palm1Form.getFieldsValue(), function() {
-            setLoading(false);
-            messageApi.success('Palm1 gmail send success')
-            props.getSettingData();
-        });
+        let data = palm1Form.getFieldsValue();
+        delete data.body;  delete data.sendBtn; delete data.files;
+
+        if (props.whatsapp.isWhatsApp === undefined || props.whatsapp.isWhatsApp === true || props.whatsapp.isWhatsApp === 'true') {
+            setLoading(true);
+            setTip('Checking WhatsApp Setting');
+            axios.post(APP_API_URL + 'api.php?class=WhatsApp&fn=set_groups').then((resp) => {
+                if (typeof resp.data === "string") {
+                    setLoading(false);
+                    messageApi.error("Please confirm whatsapp setting");
+                    return;
+                } else if (resp.data.error) {
+                    setLoading(false);
+                    messageApi.error(resp.data.error);
+                    return;
+                }
+                setTip('Sending Gmail and WhatsApp Message');
+                props.sendEmail('palm1', data, function() {
+                    setLoading(false);
+                    messageApi.success('Palm1 Gmail and WhatsApp send success');
+                    props.getSettingData();
+                });
+            });
+        } else {
+            setLoading(true);
+            setTip('Sending Gmail');
+            props.sendEmail('palm1', data, function() {
+                setLoading(false);
+                messageApi.success('Palm1 Gmail send success');
+                props.getSettingData();
+            });
+        }
     }
 
     const handleShai2IsWhatsAppChange = function(v) {
