@@ -1,0 +1,169 @@
+import {Button, Col, Form, Input, Modal, Row, Spin} from "antd";
+import {MinusCircleOutlined, PlusOutlined} from "@ant-design/icons";
+import React from "react";
+const HtmlToReactParser = require('html-to-react').Parser;
+const htmlToReactParser = new HtmlToReactParser();
+
+const layout = {
+    labelCol: {
+        span: 3,
+    },
+    wrapperCol: {
+        span: 21,
+    },
+};
+
+const formItemLayoutWithOutLabel = {
+    wrapperCol: {
+        xs: {
+            span: 21,
+            offset: 3,
+        },
+    },
+};
+
+const validateMessages = {
+    required: '${label} is required!'
+}
+
+const Shai2 = function(props) {
+    return (
+        <Modal
+            title="Shai2 Preview"
+            centered
+            open={props.settings.shai2.open === true}
+            footer={null}
+            width={900}
+            closable={false}
+        >
+            <Spin spinning={props.loading} tip={props.tip} delay={500}>
+                <Row>
+                    <Col span={24}>
+                        <Form
+                            {...layout}
+                            onFinish={props.handleSendSubmit}
+                            validateMessages={validateMessages}
+                            form={props.form}
+                        >
+                            <Col span={6} offset={18}>
+                                <Form.Item
+                                    name={['sendBtn']}
+                                >
+                                    <Button offset={10} type="primary" htmlType="submit">Send</Button>
+                                    <Button type="dashed" onClick={(e) => {props.handleCancelClick('shai2')}}>Cancel</Button>
+                                </Form.Item>
+                            </Col>
+                            <Form.Item
+                                name={['subject']}
+                                label="Subject"
+                                rules={[
+                                    {
+                                        required: true,
+                                    },
+                                ]}
+                            >
+                                <Input size="large"/>
+                            </Form.Item>
+                            <Form.List
+                                name="receivers"
+                                rules={[
+                                    {
+                                        validator: async (_, names) => {
+                                            if (!names || names.length < 1) {
+                                                return Promise.reject(new Error('At least 1 receiver'));
+                                            }
+                                        },
+                                    },
+                                ]}
+                            >
+                                {(fields, { add, remove }, { errors }) => (
+                                    <>
+                                        {fields.map((field, index) => (
+                                            <Form.Item
+                                                {...(index === 0 ? layout : formItemLayoutWithOutLabel)}
+                                                label={index === 0 ? 'Receivers' : ''}
+                                                required={false}
+                                                key={field.key}
+                                            >
+                                                <Form.Item
+                                                    {...field}
+                                                    validateTrigger={['onChange', 'onBlur']}
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            whitespace: true,
+                                                            message: "Please input receiver email id or delete this field.",
+                                                        },
+                                                    ]}
+                                                    noStyle
+                                                >
+                                                    <Input
+                                                        size="large"
+                                                        placeholder="receiver gmail id"
+                                                        style={{
+                                                            width: '95%',
+                                                        }}
+                                                    />
+                                                </Form.Item>
+                                                {fields.length > 1 ? (
+                                                    <MinusCircleOutlined
+                                                        className="dynamic-delete-button"
+                                                        onClick={() => remove(field.name)}
+                                                    />
+                                                ) : null}
+                                            </Form.Item>
+                                        ))}
+                                        <Form.Item>
+                                            <Button
+                                                type="dashed"
+                                                onClick={() => add()}
+                                                style={{
+                                                    width: '30%',
+                                                    marginLeft: '14%'
+                                                }}
+                                                icon={<PlusOutlined />}
+                                            >
+                                                Add Receiver Gmail
+                                            </Button>
+                                            <Form.ErrorList errors={errors} />
+                                        </Form.Item>
+                                    </>
+                                )}
+                            </Form.List>
+                            <Form.Item
+                                name={['body']}
+                                label="body"
+                                rules={[
+                                    {
+                                        required: true,
+                                    },
+                                ]}
+                            >
+                                {htmlToReactParser.parse(props.settings.shai2.body)}
+                            </Form.Item>
+                            <Form.Item
+                                name={['files']}
+                                label="Files"
+                                rules={[
+                                    {
+                                        required: true,
+                                    },
+                                ]}
+                            >
+                                <div style={{marginTop: '-0.5rem'}}>
+                                    {
+                                        props.settings.shai2.files.map((f, i) => {
+                                            return <p key={i}>{f.name}</p>
+                                        })
+                                    }
+                                </div>
+                            </Form.Item>
+                        </Form>
+                    </Col>
+                </Row>
+            </Spin>
+        </Modal>
+    )
+}
+
+export default Shai2;
