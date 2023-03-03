@@ -45,7 +45,7 @@ const Email = (props) => {
 
             let shai2 = {...props.settings.shai2};
             shai2.isWhatsApp = ((props.whatsapp.isWhatsApp === undefined || props.whatsapp.isWhatsApp === true || props.whatsapp.isWhatsApp === 'true') && (shai2.isWhatsApp === true || shai2.isWhatsApp === 'true')) ? true : false;
-            shai2.whatsapp_message = shai2.whatsapp_message === undefined ? props.whatsapp.default_message : shai2.whatsapp_message;
+            // shai2.whatsapp_message = shai2.whatsapp_message === undefined ? props.whatsapp.default_message : shai2.whatsapp_message;
             shai2.whatsapp_people = shai2.whatsapp_people === undefined ? [''] : shai2.whatsapp_people;
             shai2.whatsapp_groups = shai2.whatsapp_groups === undefined ? [''] : shai2.whatsapp_groups;
             setShai2IsWhatsApp(shai2.isWhatsApp);

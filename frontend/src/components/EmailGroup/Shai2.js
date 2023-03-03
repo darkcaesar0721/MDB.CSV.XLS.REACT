@@ -154,12 +154,12 @@ const Shai2 = function(props) {
                                     disabled={!(props.whatsapp.isWhatsApp === undefined || props.whatsapp.isWhatsApp === true || props.whatsapp.isWhatsApp === 'true')}
                                 />
                             </Form.Item>
-                            <Form.Item
-                                name={['whatsapp_message']}
-                                label="WhatsApp Send Message"
-                            >
-                                <Input.TextArea disabled={!props.isWhatsApp} showCount autoSize={{ minRows: 3, maxRows: 10 }}/>
-                            </Form.Item>
+                            {/*<Form.Item*/}
+                            {/*    name={['whatsapp_message']}*/}
+                            {/*    label="WhatsApp Send Message"*/}
+                            {/*>*/}
+                            {/*    <Input.TextArea disabled={!props.isWhatsApp} showCount autoSize={{ minRows: 3, maxRows: 10 }}/>*/}
+                            {/*</Form.Item>*/}
                             <Form.List
                                 name="whatsapp_people"
                             >

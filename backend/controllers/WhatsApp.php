@@ -6,6 +6,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 require __DIR__ . '/../vendor/ultramsg/whatsapp-php-sdk/ultramsg.class.php';
 
+require __DIR__ . '/../vendor/pdfcrowd/pdfcrowd/pdfcrowd.php';
+
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
@@ -89,33 +91,85 @@ class WhatsApp
         }
     }
 
-    public function send($campaign)
+    public function send($name, $campaign)
     {
         $token = $this->whatsapp->token;
         $instance_id = $this->whatsapp->instance_id;
         $message = $campaign->whatsapp_message;
         $groups = json_decode($this->whatsapp->groups);
 
-        $class = '\ultramsg\WhatsAppApi';
-        $client = new $class($token, $instance_id);
+        if ($name == 'shai2') {
+            $png_client = new \Pdfcrowd\HtmlToImageClient("darkcaesar", "554abd96755a0db2b4293e8271cb4a8c");
 
-        if (($campaign->isWhatsApp === true || $campaign->isWhatsApp === 'true') && $campaign->whatsapp_people !== "" && count($campaign->whatsapp_people) > 0 && $message !== '') {
-            foreach($campaign->whatsapp_people as $person) {
-                if ($person !== '') {
-                    $to = $person;
-                    $body = $message;
-                    $api = $client->sendChatMessage($to, $body);
+            $png_client->setOutputFormat("png");
+
+            $file_path = "C:\\" . strtotime(date('Y-m-d h:i:s A')) . ".png";
+            $png_client->convertStringToFile($campaign->body, $file_path);
+
+            $img = file_get_contents($file_path);
+            $img = base64_encode($img);
+
+            $client = new Client();
+            $headers = [
+                'Content-Type' => 'application/x-www-form-urlencoded'
+            ];
+
+            if (($campaign->isWhatsApp === true || $campaign->isWhatsApp === 'true') && $campaign->whatsapp_people !== "" && count($campaign->whatsapp_people) > 0) {
+                foreach($campaign->whatsapp_people as $person) {
+                    if ($person !== '') {
+                        $params=array(
+                            'token' => $token,
+                            'to' => $person,
+                            'image' => $img,
+                            'caption' => 'shai2'
+                        );
+                        $options = ['form_params' => $params ];
+                        $request = new Request('POST', 'https://api.ultramsg.com/' . $instance_id . '/messages/image', $headers);
+                        $res = $client->sendAsync($request, $options)->wait();
+                    }
                 }
             }
-        }
-        if (($campaign->isWhatsApp === true || $campaign->isWhatsApp === 'true') && $campaign->whatsapp_groups !== "" && count($campaign->whatsapp_groups) > 0 && $message !== '') {
-            foreach($campaign->whatsapp_groups as $group) {
-                if ($group !== '') {
-                    foreach($groups as $g) {
-                       if (strpos($g->name, $group) !== false) {
-                            $to = $g->id;
-                            $body = $message;
-                            $api = $client->sendChatMessage($to, $body);
+            if (($campaign->isWhatsApp === true || $campaign->isWhatsApp === 'true') && $campaign->whatsapp_groups !== "" && count($campaign->whatsapp_groups) > 0) {
+                foreach($campaign->whatsapp_groups as $group) {
+                    if ($group !== '') {
+                        foreach($groups as $g) {
+                            if (strpos($g->name, $group) !== false) {
+                                $params=array(
+                                    'token' => $token,
+                                    'to' => $g->id,
+                                    'image' => $img,
+                                    'caption' => 'shai2'
+                                );
+                                $options = ['form_params' => $params ];
+                                $request = new Request('POST', 'https://api.ultramsg.com/' . $instance_id . '/messages/image', $headers);
+                                $res = $client->sendAsync($request, $options)->wait();
+                            }
+                        }
+                    }
+                }
+            }
+        } else {
+            $class = '\ultramsg\WhatsAppApi';
+            $client = new $class($token, $instance_id);
+
+            if (($campaign->isWhatsApp === true || $campaign->isWhatsApp === 'true') && $campaign->whatsapp_people !== "" && count($campaign->whatsapp_people) > 0 && $message !== '') {
+                foreach($campaign->whatsapp_people as $person) {
+                    if ($person !== '') {
+                        $to = $person;
+                        $body = $message;
+                        $api = $client->sendChatMessage($to, $body);
+                    }
+                }
+            }
+            if (($campaign->isWhatsApp === true || $campaign->isWhatsApp === 'true') && $campaign->whatsapp_groups !== "" && count($campaign->whatsapp_groups) > 0 && $message !== '') {
+                foreach($campaign->whatsapp_groups as $group) {
+                    if ($group !== '') {
+                        foreach($groups as $g) {
+                            if (strpos($g->name, $group) !== false) {
+                                $to = $g->id;
+                                $body = $message;
+                                $api = $client->sendChatMessage($to, $body);
+                            }
                         }
                     }
                 }
