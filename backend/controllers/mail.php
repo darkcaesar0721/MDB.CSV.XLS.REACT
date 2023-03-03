@@ -440,7 +440,7 @@ class Mail
 
             $mail->Body = $this->email_setting->$name->body;
 
-            $mail->send();
+//            $mail->send();
         }
 
         $this->email_setting_obj->save($this->email_setting);

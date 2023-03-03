@@ -103,7 +103,7 @@ class WhatsApp
 
             $png_client->setOutputFormat("png");
 
-            $file_path = "C:\\" . strtotime(date('Y-m-d h:i:s A')) . ".png";
+            $file_path = "C:\\screen_img\\" . strtotime(date('Y-m-d h:i:s A')) . ".png";
             $png_client->convertStringToFile($campaign->body, $file_path);
 
             $img = file_get_contents($file_path);
@@ -121,7 +121,7 @@ class WhatsApp
                             'token' => $token,
                             'to' => $person,
                             'image' => $img,
-                            'caption' => 'shai2'
+                            'caption' => $message
                         );
                         $options = ['form_params' => $params ];
                         $request = new Request('POST', 'https://api.ultramsg.com/' . $instance_id . '/messages/image', $headers);
@@ -138,7 +138,7 @@ class WhatsApp
                                     'token' => $token,
                                     'to' => $g->id,
                                     'image' => $img,
-                                    'caption' => 'shai2'
+                                    'caption' => $message
                                 );
                                 $options = ['form_params' => $params ];
                                 $request = new Request('POST', 'https://api.ultramsg.com/' . $instance_id . '/messages/image', $headers);

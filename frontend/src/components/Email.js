@@ -45,7 +45,7 @@ const Email = (props) => {
 
             let shai2 = {...props.settings.shai2};
             shai2.isWhatsApp = ((props.whatsapp.isWhatsApp === undefined || props.whatsapp.isWhatsApp === true || props.whatsapp.isWhatsApp === 'true') && (shai2.isWhatsApp === true || shai2.isWhatsApp === 'true')) ? true : false;
-            // shai2.whatsapp_message = shai2.whatsapp_message === undefined ? props.whatsapp.default_message : shai2.whatsapp_message;
+            shai2.whatsapp_message = shai2.whatsapp_message === undefined ? props.whatsapp.default_message : shai2.whatsapp_message;
             shai2.whatsapp_people = shai2.whatsapp_people === undefined ? [''] : shai2.whatsapp_people;
             shai2.whatsapp_groups = shai2.whatsapp_groups === undefined ? [''] : shai2.whatsapp_groups;
             setShai2IsWhatsApp(shai2.isWhatsApp);
@@ -53,9 +53,9 @@ const Email = (props) => {
 
             let palm1 = props.settings.palm1;
             palm1.isWhatsApp = ((props.whatsapp.isWhatsApp === undefined || props.whatsapp.isWhatsApp === true || props.whatsapp.isWhatsApp === 'true') && (palm1.isWhatsApp === true || palm1.isWhatsApp === 'true')) ? true : false;
-            palm1.whatsapp_message = palm1.whatsapp_message === undefined || palm1.whatsapp_message === '' ? props.whatsapp.default_message : palm1.whatsapp_message;
-            palm1.whatsapp_people = palm1.whatsapp_people === undefined || palm1.whatsapp_people === '' ? [''] : palm1.whatsapp_people;
-            palm1.whatsapp_groups = palm1.whatsapp_groups === undefined || palm1.whatsapp_groups === '' ? [''] : palm1.whatsapp_groups;
+            palm1.whatsapp_message = palm1.whatsapp_message === undefined ? props.whatsapp.default_message : palm1.whatsapp_message;
+            palm1.whatsapp_people = palm1.whatsapp_people === undefined ? [''] : palm1.whatsapp_people;
+            palm1.whatsapp_groups = palm1.whatsapp_groups === undefined ? [''] : palm1.whatsapp_groups;
             setPalm1IsWhatsApp(palm1.isWhatsApp);
             palm1Form.setFieldsValue(palm1);
 
