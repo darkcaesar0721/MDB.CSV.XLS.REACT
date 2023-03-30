@@ -276,7 +276,7 @@ class Mail
 
             foreach ($schedules as $i => $v) {
                 foreach($v as $j => $r) {
-                    if (strtotime($r) == strtotime($date)) {
+                    if ($r == $date) {
                         $cur_date_index = $i;
                     }
                 }
@@ -306,7 +306,7 @@ class Mail
                 $cur_row = [];
                 foreach ($schedules as $i => $v) {
                     foreach($v as $j => $r) {
-                        if (strtotime($r) == strtotime($date)) {
+                        if ($r == $date) {
                             $cur_date_index = $i;
                         }
                     }
@@ -333,7 +333,7 @@ class Mail
             $cur_row = [];
             foreach ($schedules as $i => $v) {
                 foreach($v as $j => $r) {
-                    if (strtotime($r) == strtotime($date)) {
+                    if ($r == $date) {
                         $cur_index = $i;
                         $cur_row = $v;
                     }
