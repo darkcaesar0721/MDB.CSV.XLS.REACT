@@ -154,6 +154,14 @@ const Dashboard = (props) => {
                     schedule_index: -1,
                     count: ''
                 },
+                {
+                    file: folder_name + "_PALM.xls",
+                    query: "003a13b_Palm CON TX",
+                    sheet: "TX",
+                    schedule: "Palm CON TX",
+                    schedule_index: -1,
+                    count: ''
+                },
             ];
             return newState;
         });

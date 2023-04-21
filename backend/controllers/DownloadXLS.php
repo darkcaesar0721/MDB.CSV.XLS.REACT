@@ -26,8 +26,13 @@ if (file_exists($xls_previous_path)) {
     $files = glob($xls_previous_path . "\\" . "*.xls");
     $spreadsheet = $reader->load($files[0]);
 
-    $d = $spreadsheet->getSheet($index)->toArray();
-    $xls['pre_phone'] = $d[1][1];
+    $sheetNames = $spreadsheet->getSheetNames();
+    if (array_key_exists($index, $sheetNames)) {
+        $d = $spreadsheet->getSheet($index)->toArray();
+        $xls['pre_phone'] = $d[1][1];
+    } else {
+        $xls['pre_phone'] = '';
+    }
 } else {
     echo json_encode(array('status' => 'error', 'description' => 'XLS previous download file path wrong'));
     exit;

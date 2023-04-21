@@ -59,6 +59,9 @@ const FileList = function(props) {
                     <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
                         <span>FL</span>
                     </Col>
+                    <Col span={24} style={{marginTop: '0.5rem', textAlign: 'center'}}>
+                        <span>TX</span>
+                    </Col>
                 </Row>
             </Col>
         </Row>
