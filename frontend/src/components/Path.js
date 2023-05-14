@@ -1,11 +1,13 @@
-import {Row, Col, Input, Form, Select, Button, Popconfirm} from "antd";
+import {Row, Col, Input, Form, Select, Button, Popconfirm, Switch} from "antd";
 import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {getPathData, setPathData, download} from "../redux/actions";
+import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 
 const downloadTimeOption = [
     {value: '8AM', label: '8AM'},
     {value: '2PM', label: '2PM'},
+    {value: '5PM', label: '5PM'},
 ];
 
 const downloadWayOption = [
@@ -24,6 +26,7 @@ const Path = (props) => {
     }, []);
 
     useEffect(function() {
+        console.log(props.path);
         pathForm.setFieldsValue(props.path);
 
         setPath(props.path);
@@ -52,7 +55,7 @@ const Path = (props) => {
                 newState.folder_name = date + ' ' + v;
                 return newState;
             });
-            props.setPathData({download_time: v, folder_name: date + ' ' + v});
+            props.setPathData({download_time: v, folder_name: date + ' ' + v, is5pmIgnore: false});
         } else {
             setPath((oldState) => {
                 let newState = {...oldState};
@@ -72,7 +75,15 @@ const Path = (props) => {
         props.setPathData({download_way: v});
     }
 
-    
+    const handleIs5pmIgnoreChange = (v) => {
+        setPath((oldState) => {
+            let newState = {...oldState};
+            newState.is5pmIgnore = v;
+            return newState;
+        });
+        props.setPathData({is5pmIgnore: v});
+    }
+
     const validateMessages = {
         required: '${label} is required!'
     };
@@ -168,7 +179,7 @@ const Path = (props) => {
                         <Input size="large" placeholder="C:\mdb_work\XLS\02232023 8AM" onBlur={(e) => {savePath('xls_previous_path')}} onChange={(e) => {handlePathChange('xls_previous_path', e)}}/>
                     </Form.Item>
                 </Col>
-                <Col span={5} offset={4}>
+                <Col span={5} offset={2}>
                     <Form.Item
                         name={['folder_name']}
                         label="Generate folder Name"
@@ -193,6 +204,20 @@ const Path = (props) => {
                             style={{ width: '100%' }}
                             options={downloadTimeOption}
                             value={path.download_time === undefined ? '8AM' : path.download_time}
+                        />
+                    </Form.Item>
+                </Col>
+                <Col span={2} offset={1}>
+                    <Form.Item
+                        name={['is5pmIgnore']}
+                        label="5PM Ignore"
+                    >
+                        <Switch
+                            checkedChildren={<CheckOutlined />}
+                            unCheckedChildren={<CloseOutlined />}
+                            size="large"
+                            onChange={handleIs5pmIgnoreChange}
+                            checked={path.is5pmIgnore === 'true' || path.is5pmIgnore === true}
                         />
                     </Form.Item>
                 </Col>
