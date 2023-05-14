@@ -5,6 +5,7 @@
         "phpmailer/phpmailer": "^6.7",
         "ultramsg/whatsapp-php-sdk": "^2.0",
         "guzzlehttp/guzzle": "~6.0",
-        "pdfcrowd/pdfcrowd": "^5.12"
+        "pdfcrowd/pdfcrowd": "^5.12",
+        "ext-json": "*"
     }
 }

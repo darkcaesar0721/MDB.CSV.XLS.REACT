@@ -1,7 +1,7 @@
 import {Row, Col, Input, Form, Select, Button, Popconfirm, Switch} from "antd";
 import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
-import {getPathData, setPathData, download} from "../redux/actions";
+import {getPathData, setPathData} from "../redux/actions";
 import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 
 const downloadTimeOption = [
@@ -20,13 +20,31 @@ const Path = (props) => {
     const [pathForm] = Form.useForm();
 
     const [path, setPath] = useState({});
+    const [downloadTimeOption, setDownloadTimeOption] = useState([]);
 
     useEffect(function() {
         props.getPathData();
     }, []);
 
     useEffect(function() {
-        console.log(props.path);
+        console.log(props.path.is5pmIgnore);
+        if (props.path.is5pmIgnore === undefined || props.path.is5pmIgnore === "true" || props.path.is5pmIgnore === true) {
+            setDownloadTimeOption(function(oldState) {
+                return [
+                    {value: '8AM', label: '8AM'},
+                    {value: '2PM', label: '2PM'},
+                ];
+            });
+        } else {
+            setDownloadTimeOption(function(oldState) {
+                return [
+                    {value: '8AM', label: '8AM'},
+                    {value: '2PM', label: '2PM'},
+                    {value: '5PM', label: '5PM'},
+                ];
+            });
+        }
+
         pathForm.setFieldsValue(props.path);
 
         setPath(props.path);
