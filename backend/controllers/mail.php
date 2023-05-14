@@ -328,6 +328,36 @@ class Mail
                     }
                 }
             }
+
+            if ($time == "5PM") {
+                $cur_date_index = -1;
+                $cur_weekday_index = -1;
+                $cur_index = -1;
+                $cur_row = [];
+                foreach ($schedules as $i => $v) {
+                    foreach($v as $j => $r) {
+                        if ($r == $date) {
+                            $cur_date_index = $i;
+                        }
+                    }
+                    if ($cur_date_index !== -1) {
+                        foreach($v as $j => $r) {
+                            if (strpos($r, '5PM') > 0) {
+                                $cur_weekday_index = $i;
+                            }
+                        }
+                    }
+                    if ($cur_date_index !== -1 && $cur_date_index === $cur_weekday_index) {
+                        $cur_index = $i; $cur_row = $v;
+                        break;
+                    }
+                }
+                if ($cur_index !== -1) {
+                    foreach($this->a_counts as $i => $a_c) {
+                        $this->a_counts[$i]['v'] = $this->a_counts[$i]['v'] . ' ' . $cur_row[$a_c['i']];
+                    }
+                }
+            }
         } else {
             $cur_index = -1;
             $cur_row = [];
@@ -342,8 +372,11 @@ class Mail
 
             if ($cur_index !== -1) {
                 foreach($this->a_counts as $i => $a_c) {
-                    if ($time == "2PM") {
+                    if ($time == "5PM") {
                         $this->a_counts[$i]['v'] = $cur_row[$a_c['i']];
+                    } else if ($time == "2PM") {
+                        $sp1 = explode(' ', $cur_row[$a_c['i']]);
+                        $this->a_counts[$i]['v'] = $sp1[0] . ' ' . $sp1[1];
                     } else {
                         $sp1 = explode(' ', $cur_row[$a_c['i']]);
                         $this->a_counts[$i]['v'] = $sp1[0];
