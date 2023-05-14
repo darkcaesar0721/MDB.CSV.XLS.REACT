@@ -121,28 +121,28 @@ class schedule
                         if ($cur_schedule_index !== -1) {
                             if ($cur_schedule[$i]) {
                                 if (strpos($cur_schedule[$i], '+') !== false) {
-                                    array_push($row, $cur_schedule[$i] . '+' . $c['count']);
+                                    $row[] = $cur_schedule[$i] . '+' . $c['count'];
                                 } else {
                                     if ($cur_schedule[$i] == ' ' || $cur_schedule[$i] == '') {
-                                        array_push($row, $c['count']);
+                                        $row[] = $c['count'];
                                     } else {
                                         $exp = explode(" ", $cur_schedule[$i]);
                                         if (count($exp) > 2) {
-                                            array_push($row, $cur_schedule[$i] . ' ' . $c['count']);
+                                            $row[] = $cur_schedule[$i] . ' ' . $c['count'];
                                         } else {
                                             if ((int)$exp[0] < 13) {
-                                                array_push($row, $cur_schedule[$i] . '+' . $c['count']);
+                                                $row[] = $cur_schedule[$i] . '+' . $c['count'];
                                             } else {
-                                                array_push($row, $cur_schedule[$i] . ' ' . $c['count']);
+                                                $row[] = $cur_schedule[$i] . ' ' . $c['count'];
                                             }
                                         }
                                     }
                                 }
                             } else {
-                                array_push($row, $c['count']);
+                                $row[] = $c['count'];
                             }
                         } else {
-                            array_push($row, $c['count']);
+                            $row[] = $c['count'];
                         }
                         $ext = true;
                     }
@@ -150,7 +150,7 @@ class schedule
 
                 if (!$ext) {
                     if (!$cur_schedule[$i]) array_push($row, ' ');
-                    else array_push($row, $cur_schedule[$i]);
+                    else $row[] = $cur_schedule[$i];
                 }
             }
         } else {
@@ -163,37 +163,37 @@ class schedule
                         if ($cur_schedule_index !== -1) {
                             if ($cur_schedule[$i]) {
                                 if (strpos($cur_schedule[$i], '+') !== false) {
-                                    array_push($row, $cur_schedule[$i] . '+' . $c['count']);
+                                    $row[] = $cur_schedule[$i] . '+' . $c['count'];
                                 } else {
                                     if ($cur_schedule[$i] == ' ' || $cur_schedule[$i] == '') {
-                                        array_push($row, $c['count']);
+                                        $row[] = $c['count'];
                                     } else {
                                         $exp = explode(" ", $cur_schedule[$i]);
                                         if (count($exp) > 2) {
-                                            array_push($row, $cur_schedule[$i] . ' ' . $c['count']);
+                                            $row[] = $cur_schedule[$i] . ' ' . $c['count'];
                                         } else {
                                             if ((int)$exp[0] < 13) {
-                                                array_push($row, $cur_schedule[$i] . '+' . $c['count']);
+                                                $row[] = $cur_schedule[$i] . '+' . $c['count'];
                                             } else {
-                                                array_push($row, $cur_schedule[$i] . ' ' . $c['count']);
+                                                $row[] = $cur_schedule[$i] . ' ' . $c['count'];
                                             }
                                         }
                                     }
                                 }
                             } else {
-                                array_push($row, $c['count']);
+                                $row[] = $c['count'];
                             }
 
                         } else {
-                            array_push($row, $c['count']);
+                            $row[] = $c['count'];
                         }
                         $ext = true;
                     }
                 }
 
                 if (!$ext) {
-                    if (!$cur_schedule[$i]) array_push($row, ' ');
-                    else array_push($row, $cur_schedule[$i]);
+                    if (!$cur_schedule[$i]) $row[] = ' ';
+                    else $row[] = $cur_schedule[$i];
                 }
             }
         }
@@ -215,13 +215,27 @@ class schedule
 
         $path->csv_previous_path = ($download_type === 'all' || $download_type === 'csv') ? $path->csv_path . "\\" . $path->folder_name : $path->csv_previous_path;
         $path->xls_previous_path = ($download_type === 'all' || $download_type === 'xls') ? $path->xls_path . "\\" . $path->folder_name : $path->xls_previous_path;
-        if ($time === '2PM') {
-            $date = date("mdY", strtotime('+1 day', strtotime($date)));
-            $path->download_time = '8AM';
-            $path->folder_name = $date . ' 8AM'; 
-        } else {
+
+        if ($time === '8AM') {
             $path->download_time = '2PM';
-            $path->folder_name = $sp[0] . ' 2PM'; 
+            $path->folder_name = $sp[0] . ' 2PM';
+        }
+
+        if ($path->is5pmIgnore || $path->is5pmIgnore == "true") {
+            if ($time === '2PM') {
+                $date = date("mdY", strtotime('+1 day', strtotime($date)));
+                $path->download_time = '8AM';
+                $path->folder_name = $date . ' 8AM';
+            }
+        } else {
+            if ($time === '5PM') {
+                $date = date("mdY", strtotime('+1 day', strtotime($date)));
+                $path->download_time = '8AM';
+                $path->folder_name = $date . ' 8AM';
+            } else if ($time === '2PM') {
+                $path->download_time = '5PM';
+                $path->folder_name = $sp[0] . ' 5PM';
+            }
         }
             
         $path_obj->save($path);
