@@ -4,12 +4,6 @@ import {connect} from "react-redux";
 import {getPathData, setPathData} from "../redux/actions";
 import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 
-const downloadTimeOption = [
-    {value: '8AM', label: '8AM'},
-    {value: '2PM', label: '2PM'},
-    {value: '5PM', label: '5PM'},
-];
-
 const downloadWayOption = [
     {value: 'all', label: 'CSV & XLS'},
     {value: 'csv', label: 'CSV'},

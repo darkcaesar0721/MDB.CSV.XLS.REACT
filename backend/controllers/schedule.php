@@ -221,7 +221,7 @@ class schedule
             $path->folder_name = $sp[0] . ' 2PM';
         }
 
-        if ($path->is5pmIgnore || $path->is5pmIgnore == "true") {
+        if ($path->is5pmIgnore == "true") {
             if ($time === '2PM') {
                 $date = date("mdY", strtotime('+1 day', strtotime($date)));
                 $path->download_time = '8AM';
