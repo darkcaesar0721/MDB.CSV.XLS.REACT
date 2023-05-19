@@ -299,7 +299,7 @@ class Mail
                 }
             }
             
-            if ($time == "2PM") {
+            if ($time == "2PM" || $time == "5PM") {
                 $cur_date_index = -1;
                 $cur_weekday_index = -1;
                 $cur_index = -1;
