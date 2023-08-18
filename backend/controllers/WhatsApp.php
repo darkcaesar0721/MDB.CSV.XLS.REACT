@@ -99,7 +99,7 @@ class WhatsApp
         $groups = json_decode($this->whatsapp->groups);
 
         if ($name == 'shai2') {
-            $png_client = new \Pdfcrowd\HtmlToImageClient("blackleopard", "a985350e9480654ff5f38725345d010f");
+            $png_client = new \Pdfcrowd\HtmlToImageClient("darkcaesarpdfcrowd", "1700f564b81cba04e09fdb9292d76c00");
 
             $png_client->setOutputFormat("png");
 
