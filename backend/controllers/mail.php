@@ -120,6 +120,7 @@ class Mail
             echo json_encode(array('status' => 'error', 'text' => 'csv previous path is invalid.'));
             exit;
         }
+        
         $folder_path = $this->path->csv_previous_path;
         $sp = explode('\\', $folder_path);
         $folder_name = $sp[count($sp) - 1];
@@ -145,6 +146,7 @@ class Mail
             echo json_encode(array('status' => 'error', 'text' => 'csv previous path is invalid.'));
             exit;
         }
+
         $folder_path = $this->path->csv_previous_path;
         $sp = explode('\\', $folder_path);
         $folder_name = $sp[count($sp) - 1];
