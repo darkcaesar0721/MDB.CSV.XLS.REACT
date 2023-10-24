@@ -92,15 +92,19 @@ class schedule
 
         if ($date_info['wday'] == 4) {
             $name = $date_info['weekday'] . ' ' . $time;
+
             $cur_schedule = [];
             $cur_schedule_index = -1;
+
             foreach($schedules as $i => $v) {
                 $cur_date_index = -1;
                 $cur_name_index = -1;
+
                 foreach($v as $j => $r) {
                     if (strtotime($date) == strtotime(date($r))) {
                         $cur_date_index = $i;
                     }
+
                     if ($name == $r) {
                         $cur_name_index = $i;
                     }
@@ -201,6 +205,7 @@ class schedule
         $body = new Google_Service_Sheets_ValueRange([
             'values' => [$row]
         ]);
+        
         $params = [
             'valueInputOption' => 'USER_ENTERED'
         ];
