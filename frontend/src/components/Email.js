@@ -1,4 +1,4 @@
-import {message, Spin, Row, Col, Input, Form, Button, Popconfirm, Modal} from "antd";
+import {message, Divider, Row, Col, Input, Form, Button, Popconfirm} from "antd";
 import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
 import {
@@ -10,7 +10,6 @@ import {
     sendEmail,
     getWhatsApp
 } from "../redux/actions";
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import Shai1 from "./EmailGroup/Shai1";
 import Shai2 from "./EmailGroup/Shai2";
 import Palm1 from "./EmailGroup/Palm1";
@@ -40,7 +39,6 @@ const Email = (props) => {
     useEffect(function() {
         if (props.settings.shai1 !== undefined) {
             emailForm.setFieldsValue(props.email);
-            //
             shai1Form.setFieldsValue(props.settings.shai1);
 
             let shai2 = {...props.settings.shai2};
@@ -196,10 +194,12 @@ const Email = (props) => {
             <Form
                 validateMessages={validateMessages}
                 form={emailForm}
-                style={{padding: '1rem', paddingBottom: '0', border: '1px solid #898383', borderRadius: '10px', marginTop: '1rem'}}
+                layout="vertical"
+                style={{padding: '1rem', paddingBottom: '0', border: '1px solid #e5e1e1', borderRadius: '5px', marginLeft: '1rem'}}
             >
+                <Divider>GMAIL INSTANCE SETTING</Divider>
                 <Row>
-                    <Col span={5} offset={3}>
+                    <Col span={24}>
                         <Form.Item
                             name={['sender']}
                             label="Sender"
@@ -213,7 +213,7 @@ const Email = (props) => {
                             <Input size="large" placeholder="yourgamil@gmail.com" onBlur={(e) => {saveEmail('sender')}} onChange={(e) => {handleEmailChange('sender', e)}}/>
                         </Form.Item>
                     </Col>
-                    <Col span={6} offset={1}>
+                    <Col span={24}>
                         <Form.Item
                             name={['password']}
                             label="App password"
@@ -227,7 +227,7 @@ const Email = (props) => {
                             <Input size="large" placeholder="" onBlur={(e) => {saveEmail('password')}} onChange={(e) => {handleEmailChange('password', e)}}/>
                         </Form.Item>
                     </Col>
-                    <Col span={2} offset={1}>
+                    <Col span={7} offset={1}>
                         <Form.Item
                             
                         >
@@ -245,7 +245,7 @@ const Email = (props) => {
                             </Popconfirm>
                         </Form.Item>
                     </Col>
-                    <Col span={2}>
+                    <Col span={7} offset="1">
                         <Form.Item
                             
                         >
@@ -263,7 +263,7 @@ const Email = (props) => {
                             </Popconfirm>
                         </Form.Item>
                     </Col>
-                    <Col span={2}>
+                    <Col span={7} offset={1}>
                         <Form.Item
                             
                         >

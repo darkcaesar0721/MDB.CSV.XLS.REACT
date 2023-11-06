@@ -301,16 +301,20 @@ const Dashboard = (props) => {
                 </Col>
             </Row>
             <Row style={{marginTop: '1rem'}}>
-                <Col span={21} offset={1}>
+                <Col span={16} offset={1}>
                     <Path
                         downloadSubmit={downloadSubmit}
-                    />                    
+                    />                 
+                </Col>
+                <Col span={6}>   
                     <Email
                         setLoading={setLoading}
                         setTip={setTip}
                         messageApi={messageApi}
                     />
                     <WhatsApp/>
+                </Col>
+                <Col span={22} offset={1}>
                     <FileList
                         path={props.path}
                         folder_name={folder_name}

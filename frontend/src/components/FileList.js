@@ -3,7 +3,7 @@ import {Row, Col, Divider} from "antd";
 const FileList = function(props) {
     return (
         <Row>
-            <Col className={!props.path.download_way || props.path.download_way === 'all' || props.path.download_way === 'csv' ? 'download-group-selected' : ''} span={12} style={{marginTop: '1rem', padding: '1rem', border: '1px solid #898383', borderRadius: '10px'}}>
+            <Col className={!props.path.download_way || props.path.download_way === 'all' || props.path.download_way === 'csv' ? 'download-group-selected' : ''} span={11} style={{marginTop: '1rem', padding: '1rem', border: '1px solid #e5e1e1', borderRadius: '5px'}}>
                 <Divider>CSV FILE LIST</Divider>
                 <Row>
                     <Col span={15}>
@@ -38,7 +38,7 @@ const FileList = function(props) {
                     </Col>
                 </Row>
             </Col>
-            <Col className={!props.path.download_way || props.path.download_way === 'all' || props.path.download_way === 'xls' ? 'download-group-selected' : ''} span={12} style={{marginTop: '1rem', padding: '1rem', border: '1px solid #898383', borderRadius: '10px'}}>
+            <Col className={!props.path.download_way || props.path.download_way === 'all' || props.path.download_way === 'xls' ? 'download-group-selected' : ''} span={11} offset={2} style={{marginTop: '1rem', padding: '1rem', border: '1px solid #e5e1e1', borderRadius: '5px'}}>
                 <Divider>XLS SHEET LIST</Divider>
                 <Row>
                     <Col span={24} style={{textAlign: 'center'}}>

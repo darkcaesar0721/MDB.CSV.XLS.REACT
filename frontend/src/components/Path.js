@@ -106,7 +106,7 @@ const Path = (props) => {
             validateMessages={validateMessages}
             layout="vertical"
             form={pathForm}
-            style={{padding: '1rem', border: '1px solid #898383', borderRadius: '10px'}}
+            style={{padding: '1rem', border: '1px solid #e5e1e1', borderRadius: '5x'}}
         >
             <Row>
                 <Col span={20} offset={2}>

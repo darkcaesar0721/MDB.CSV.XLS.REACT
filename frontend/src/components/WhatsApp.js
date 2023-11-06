@@ -4,25 +4,6 @@ import {connect} from "react-redux";
 import {getWhatsApp, updateWhatsApp} from "../redux/actions";
 import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 
-const formItemLayout = {
-    labelCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 3,
-        },
-    },
-    wrapperCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 21,
-        },
-    },
-};
-
 function WhatsApp(props) {
     const [form] = Form.useForm();
     const [isWhatsApp, setIsWhatsApp] = useState(true);
@@ -67,16 +48,16 @@ function WhatsApp(props) {
     }
 
     return (
-        <div style={{padding: '1rem', border: '1px solid #898383', borderRadius: '10px', marginTop: '1rem'}}>
-            <Divider>WHATSAPP INSTANCE SETTING</Divider>
-            <Row style={{marginTop: '2rem'}}>
-                <Col span={20} offset={2}>
-                    <Form
-                        {...formItemLayout}
-                        form={form}
-                        name="whatsapp"
-                        scrollToFirstError
-                    >
+        <>
+            <Form
+                form={form}
+                layout="vertical"
+                name="whatsapp"
+                style={{padding: '1rem', paddingBottom: '0', border: '1px solid #e5e1e1', borderRadius: '5px', marginLeft: '1rem', marginTop: '1rem'}}
+            >
+                <Divider>WHATSAPP INSTANCE SETTING</Divider>
+                <Row>
+                    <Col span={24}>
                         <Form.Item
                             name={['isWhatsApp']}
                             label="Global WhatsApp"
@@ -89,6 +70,8 @@ function WhatsApp(props) {
                                 checked={isWhatsApp}
                             />
                         </Form.Item>
+                    </Col>
+                    <Col span={24}>
                         <Form.Item
                             name="default_message"
                             label="Default Message"
@@ -101,6 +84,8 @@ function WhatsApp(props) {
                         >
                             <Input.TextArea disabled={!isWhatsApp} showCount autoSize={{ minRows: 3, maxRows: 10 }} onBlur={saveDefaultMessage} onChange={handleDefaultMessageChange}/>
                         </Form.Item>
+                    </Col>
+                    <Col span={24}>
                         <Form.Item
                             name="instance_id"
                             label="Ultramsg Instance Id"
@@ -113,6 +98,8 @@ function WhatsApp(props) {
                         >
                             <Input disabled={!isWhatsApp} onBlur={saveInstanceId} onChange={handleInstanceIdChange}/>
                         </Form.Item>
+                    </Col>
+                    <Col span={24}>
                         <Form.Item
                             name="token"
                             label="Ultramsg Token"
@@ -125,10 +112,10 @@ function WhatsApp(props) {
                         >
                             <Input disabled={!isWhatsApp} onBlur={saveToken} onChange={handleTokenChange}/>
                         </Form.Item>
-                    </Form>
-                </Col>
-            </Row>
-        </div>
+                    </Col>
+                </Row>
+            </Form>
+        </>
     );
 }
 
