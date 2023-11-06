@@ -21,7 +21,6 @@ const Path = (props) => {
     }, []);
 
     useEffect(function() {
-        console.log(props.path.is5pmIgnore);
         if (props.path.is5pmIgnore === undefined || props.path.is5pmIgnore === "true" || props.path.is5pmIgnore === true) {
             setDownloadTimeOption(function(oldState) {
                 return [
