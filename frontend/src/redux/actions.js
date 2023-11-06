@@ -2,6 +2,7 @@ import axios from "axios";
 import qs from "qs";
 import {
     INIT_PATH_DATA,
+    INIT_LAST_PHONE_DATA,
     INIT_EMAIL_DATA,
     INIT_SETTING_DATA,
     INIT_WHATSAPP_DATA
@@ -24,6 +25,26 @@ export const setPathData = (rows = {}) => async (dispatch) => {
 
     dispatch({
         type: INIT_PATH_DATA,
+        data: result.data
+    });
+}
+
+export const getLastPhoneData = () => async (dispatch) => {
+    const result = await axios.get(APP_API_URL + 'api.php?class=LastPhone&fn=get');
+
+    dispatch({
+        type: INIT_LAST_PHONE_DATA,
+        data: result.data
+    });
+}
+
+export const setLastPhoneData = (rows = {}) => async (dispatch) => {
+    const result = await axios.post(APP_API_URL + 'api.php?class=LastPhone&fn=update', qs.stringify({
+        rows
+    }));
+
+    dispatch({
+        type: INIT_LAST_PHONE_DATA,
         data: result.data
     });
 }
