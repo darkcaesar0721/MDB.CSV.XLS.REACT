@@ -8,6 +8,7 @@ import Email from "./Email";
 import FileList from "./FileList";
 import Path from "./Path";
 import WhatsApp from "./WhatsApp";
+import LastPhone from "./LastPhone";
 
 const Dashboard = (props) => {
     const [messageApi, contextHolder] = message.useMessage();
@@ -302,9 +303,16 @@ const Dashboard = (props) => {
             </Row>
             <Row style={{marginTop: '1rem'}}>
                 <Col span={16} offset={1}>
-                    <Path
-                        downloadSubmit={downloadSubmit}
-                    />                 
+                    <Row>
+                        <Col span={24}>
+                            <Path
+                                downloadSubmit={downloadSubmit}
+                            />                 
+                        </Col>
+                        <Col span={24} style={{marginTop: "1.5rem"}}>
+                            <LastPhone/>                    
+                        </Col>
+                    </Row>
                 </Col>
                 <Col span={6}>   
                     <Email
@@ -314,6 +322,8 @@ const Dashboard = (props) => {
                     />
                     <WhatsApp/>
                 </Col>
+            </Row>
+            <Row style={{marginTop: '1rem'}}>
                 <Col span={22} offset={1}>
                     <FileList
                         path={props.path}

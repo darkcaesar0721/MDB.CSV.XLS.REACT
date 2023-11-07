@@ -162,9 +162,7 @@ const Path = (props) => {
                         <Input size="large" placeholder="C:\mdb_work\XLS" onBlur={(e) => {savePath('xls_path')}} onChange={(e) => {handlePathChange('xls_path', e)}}/>
                     </Form.Item>
                 </Col>
-                <Col span={7} offset={1}>
-                </Col>
-                <Col span={7} offset={1}>
+                {/* <Col span={7} offset={8}>
                     <Form.Item
                         name={['csv_previous_path']}
                         label="CSV previous download folder path"
@@ -189,7 +187,7 @@ const Path = (props) => {
                     >
                         <Input size="large" placeholder="C:\mdb_work\XLS\02232023 8AM" onBlur={(e) => {savePath('xls_previous_path')}} onChange={(e) => {handlePathChange('xls_previous_path', e)}}/>
                     </Form.Item>
-                </Col>
+                </Col> */}
                 <Col span={5} offset={2}>
                     <Form.Item
                         name={['folder_name']}
