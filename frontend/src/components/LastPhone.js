@@ -37,7 +37,6 @@ const LastPhone = (props) => {
 
     return (
         <Form
-            onFinish={props.downloadSubmit}
             validateMessages={validateMessages}
             layout="vertical"
             form={form}
@@ -130,7 +129,7 @@ const LastPhone = (props) => {
                     </Form.Item>
                 </Col>
             </Row>
-            <Divider>CSV LAST PHONE NUMBER SETTING</Divider>
+            <Divider>SHAI LAST PHONE NUMBER SETTING</Divider>
             <Row>
                 <Col span={4}>
                     <Form.Item
@@ -162,8 +161,8 @@ const LastPhone = (props) => {
                 </Col>
                 <Col span={4}>
                     <Form.Item
-                        name={['CSV_LA']}
-                        label="CSV_LA"
+                        name={['SHAI_LA']}
+                        label="SHAI_LA"
                         rules={[
                             {
                                 required: true,
@@ -171,13 +170,13 @@ const LastPhone = (props) => {
                         ]}
                         
                     >
-                        <Input size="large" onBlur={(e) => {saveData('CSV_LA')}} onChange={(e) => {handleDataChange('CSV_LA', e)}}/>
+                        <Input size="large" onBlur={(e) => {saveData('SHAI_LA')}} onChange={(e) => {handleDataChange('SHAI_LA', e)}}/>
                     </Form.Item>
                 </Col>
                 <Col span={4}>
                     <Form.Item
-                        name={['CSV_SD']}
-                        label="CSV_SD"
+                        name={['SHAI_SD']}
+                        label="SHAI_SD"
                         rules={[
                             {
                                 required: true,
@@ -185,13 +184,13 @@ const LastPhone = (props) => {
                         ]}
                         
                     >
-                        <Input size="large" onBlur={(e) => {saveData('CSV_SD')}} onChange={(e) => {handleDataChange('CSV_SD', e)}}/>
+                        <Input size="large" onBlur={(e) => {saveData('SHAI_SD')}} onChange={(e) => {handleDataChange('SHAI_SD', e)}}/>
                     </Form.Item>
                 </Col>
                 <Col span={4}>
                     <Form.Item
-                        name={['CSV_WA']}
-                        label="CSV_WA"
+                        name={['SHAI_WA']}
+                        label="SHAI_WA"
                         rules={[
                             {
                                 required: true,
@@ -199,7 +198,7 @@ const LastPhone = (props) => {
                         ]}
                         
                     >
-                        <Input size="large" onBlur={(e) => {saveData('CSV_WA')}} onChange={(e) => {handleDataChange('CSV_WA', e)}}/>
+                        <Input size="large" onBlur={(e) => {saveData('SHAI_WA')}} onChange={(e) => {handleDataChange('SHAI_WA', e)}}/>
                     </Form.Item>
                 </Col>
                 <Col span={4}>

@@ -139,7 +139,7 @@ const Path = (props) => {
                 <Col span={7} offset={1}>
                     <Form.Item
                         name={['csv_path']}
-                        label="CSV download folder path"
+                        label="Shai download folder path"
                         rules={[
                             {
                                 required: true,
@@ -152,7 +152,7 @@ const Path = (props) => {
                 <Col span={7} offset={1}>
                     <Form.Item
                         name={['xls_path']}
-                        label="XLS download folder path"
+                        label="Palm download folder path"
                         rules={[
                             {
                                 required: true,

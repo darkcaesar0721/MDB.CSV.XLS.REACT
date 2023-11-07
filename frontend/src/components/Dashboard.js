@@ -1,7 +1,7 @@
 import {message, Spin, Divider, Row, Col, Modal, Button} from "antd";
 import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
-import {downloadCSV, downloadXLSTab, getPathData, uploadStatus} from "../redux/actions";
+import {downloadCSV, downloadXLSTab, getPathData, uploadStatus, setLastPhoneData} from "../redux/actions";
 import CSVDownloadStatusList from "./DownloadStatus/CSVList";
 import XLSTabDownloadStatusList from "./DownloadStatus/XLSTabList";
 import Email from "./Email";
@@ -41,6 +41,7 @@ const Dashboard = (props) => {
                     query: "003a27_00a_Alit_CA Windows Doors  ------------------------  >>",
                     schedule: "0 Shai - W D, CA",
                     schedule_index: -1,
+                    phone_key: 'CA',
                     file: "00_ALL_" + folder_name + "_CA Window Door.csv",
                     count: '',
                     status: props.path.download_way === 'all' || props.path.download_way === 'csv' ? 'loading' : '', 
@@ -49,6 +50,7 @@ const Dashboard = (props) => {
                     query: "003a27_01_Alit_ALL_Kitchen Bathroom Decks",
                     schedule: "1 Shai KBD",
                     schedule_index: -1,
+                    phone_key: 'KITCHEN',
                     file: "01_ALL_" + folder_name + "_KitchenBathDecksRenovate.csv",
                     count: '',
                 },
@@ -56,6 +58,7 @@ const Dashboard = (props) => {
                     query: "003a27_02_Alit_LA",
                     schedule: "2 ALIT Shai LA",
                     schedule_index: -1,
+                    phone_key: 'SHAI_LA',
                     file: "02_LA_" + folder_name + ".csv",
                     count: ''
                 },
@@ -63,6 +66,7 @@ const Dashboard = (props) => {
                     query: "003a27_03_Alit_SD",
                     schedule: "3 ALIT Shai SD",
                     schedule_index: -1,
+                    phone_key: 'SHAI_SD',
                     file: "03_SD_" + folder_name + ".csv",
                     count: ''
                 },
@@ -70,6 +74,7 @@ const Dashboard = (props) => {
                     query: "003a27_04_Alit_WA",
                     schedule: "4 ALIT Shai WA",
                     schedule_index: -1,
+                    phone_key: 'SHAI_WA',
                     file: "04_WA_" + folder_name + ".csv",
                     count: ''
                 },
@@ -77,6 +82,7 @@ const Dashboard = (props) => {
                     query: "003a27_05_Alit_BAY South",
                     schedule: "5 ALIT Shai BAY South",
                     schedule_index: -1,
+                    phone_key: 'BAY_SOUTH',
                     file: "05_BAY_" + folder_name + " South.csv",
                     count: ''
                 },
@@ -84,6 +90,7 @@ const Dashboard = (props) => {
                     query: "003a27_06_Alit_BAY North",
                     schedule: "6 ALIT Shai BAY Noth",
                     schedule_index: -1,
+                    phone_key: 'BAY_NORTH',
                     file: "06_BAY_" + folder_name + " North.csv",
                     count: ''
                 },
@@ -91,6 +98,7 @@ const Dashboard = (props) => {
                     query: "003a27_07_Alit_OR",
                     schedule: "7 ALIT Shai OR",
                     schedule_index: -1,
+                    phone_key: 'OR',
                     file: "07_OR_" + folder_name + ".csv",
                     count: ''
                 },
@@ -98,6 +106,7 @@ const Dashboard = (props) => {
                     query: "003a27_09_Alit_Houston",
                     schedule: " 9 ALIT Shai TX HOU",
                     schedule_index: -1,
+                    phone_key: 'TX_HOUSTON',
                     file: "09_TX_Houston_" + folder_name + ".csv",
                     count: ''
                 },
@@ -105,6 +114,7 @@ const Dashboard = (props) => {
                     query: "003a27_10_Alit_Dallas",
                     schedule: "10 ALIT Shai TX  DAL",
                     schedule_index: -1,
+                    phone_key: 'TX_DALLAS',
                     file: "10_TX_Dallas_" + folder_name + ".csv",
                     count: ''
                 }
@@ -120,6 +130,7 @@ const Dashboard = (props) => {
                     sheet: "WA",
                     schedule: "Palm CON WA",
                     schedule_index: -1,
+                    phone_key: 'WA',
                     count: '',
                     status: props.path.download_way === 'xls' ? 'loading' : '', 
                 },
@@ -129,6 +140,7 @@ const Dashboard = (props) => {
                     sheet: "BAY",
                     schedule: "Palm CON BAY",
                     schedule_index: -1,
+                    phone_key: 'BAY',
                     count: ''
                 },
                 {
@@ -137,6 +149,7 @@ const Dashboard = (props) => {
                     sheet: "SD",
                     schedule: "Palm CON SD",
                     schedule_index: -1,
+                    phone_key: 'SD',
                     count: ''
                 },
                 {
@@ -145,6 +158,7 @@ const Dashboard = (props) => {
                     sheet: "LA",
                     schedule: "Palm CON LA",
                     schedule_index: -1,
+                    phone_key: 'LA',
                     count: ''
                 },
                 {
@@ -153,6 +167,7 @@ const Dashboard = (props) => {
                     sheet: "FL",
                     schedule: "Palm CON FL",
                     schedule_index: -1,
+                    phone_key: 'FL',
                     count: ''
                 },
                 {
@@ -161,6 +176,7 @@ const Dashboard = (props) => {
                     sheet: "TX",
                     schedule: "Palm CON TX",
                     schedule_index: -1,
+                    phone_key: 'TX',
                     count: ''
                 },
             ];
@@ -262,7 +278,7 @@ const Dashboard = (props) => {
                 messageApi.error(resp.data.description);
             } else {
                 resp.data.tab.status = 'complete';
-                
+
                 if (index + 1 === xlsTabs.length) {
                     updateXLSTab(index, resp.data.tab);
                     
@@ -297,8 +313,7 @@ const Dashboard = (props) => {
             {contextHolder}
             <Row>
                 <Col span={24}>
-                    <Divider><h2>MDB TO CSV AND XLS</h2></Divider>
-                    <p style={{textAlign: "center"}}>Please set mdb, csv, and xls path, then press download button!</p>
+                    <Divider><h2>MDB TO SHAI AND PALM</h2></Divider>
                 </Col>
             </Row>
             <Row style={{marginTop: '1rem'}}>

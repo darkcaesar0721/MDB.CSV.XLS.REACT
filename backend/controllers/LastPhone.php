@@ -15,9 +15,9 @@ class LastPhone
         'TX' => '',
         'CA' => '',
         'KITCHEN' => '',
-        'CSV_LA' => '',
-        'CSV_SD' => '',
-        'CSV_WA' => '',
+        'SHAI_LA' => '',
+        'SHAI_SD' => '',
+        'SHAI_WA' => '',
         'BAY_SOUTH' => '',
         'BAY_NORTH' => '',
         'OR' => '',
@@ -55,7 +55,7 @@ class LastPhone
         $rows = $_REQUEST['rows'];  
 
         foreach($rows as $key => $value) {
-            $this->lastphone->$key = $value;
+            $this->lastphone[$key] = $value;
         }
 
         file_put_contents($this->file_path, json_encode($this->lastphone));
@@ -66,12 +66,12 @@ class LastPhone
     public function get_by_key($key)
     {
         $this->set();
-        return $this->lastphone->$key;
+        return $this->lastphone[$key];
     }
 
     public function set()
     {
-        $this->lastphone = json_decode(file_get_contents($this->file_path));
+        $this->lastphone = json_decode(file_get_contents($this->file_path), true);
     }
 
     public function save($data)

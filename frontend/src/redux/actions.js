@@ -114,7 +114,13 @@ export const downloadCSV = (index, data, callback = function() {}) => async (dis
         data
     }))
         .then(function(resp) {
-            callback(resp);
+            if (resp.data.status !== 'error' && resp.data.status !== 'warning') {
+                dispatch({
+                    type: INIT_LAST_PHONE_DATA,
+                    data: resp.data.lastphone
+                });
+                callback(resp);
+            }
         })
 }
 
@@ -124,7 +130,13 @@ export const downloadXLSTab = (index, data, callback = function() {}) => async (
         data
     }))
         .then(function(resp) {
-            callback(resp);
+            if (resp.data.status !== 'error' && resp.data.status !== 'warning') {
+                dispatch({
+                    type: INIT_LAST_PHONE_DATA,
+                    data: resp.data.lastphone
+                });
+                callback(resp);
+            }
         })
 }
 

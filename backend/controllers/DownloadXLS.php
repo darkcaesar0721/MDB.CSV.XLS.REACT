@@ -3,6 +3,9 @@ error_reporting(E_ERROR);
 
 require '../vendor/autoload.php';
 
+$lastphone_file = '../db/lastphone.json';
+$lastphone = json_decode(file_get_contents($lastphone_file), true);
+
 $path_file = '../db/path.json';
 $path = json_decode(file_get_contents($path_file));
 
@@ -15,94 +18,92 @@ $folder = $path->folder_name;
 $xls = $_REQUEST['data'];
 $index = $_REQUEST['index'];
 
+$xls['pre_phone'] = $lastphone[$xls['phone_key']];
+
 try {
-# OPEN BOTH DATABASE CONNECTIONS
-$db = new PDO("odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)}; DBq=$mdb_path;Uid=;Pwd=;");
-$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();
+    # OPEN BOTH DATABASE CONNECTIONS
+    $db = new PDO("odbc:Driver={Microsoft Access Driver (*.mdb, *.accdb)}; DBq=$mdb_path;Uid=;Pwd=;");
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-if (file_exists($xls_previous_path)) {
-    $files = glob($xls_previous_path . "\\" . "*.xls");
-    $spreadsheet = $reader->load($files[0]);
+    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xls();    
 
-    $sheetNames = $spreadsheet->getSheetNames();
-    if (array_key_exists($index, $sheetNames)) {
-        $d = $spreadsheet->getSheet($index)->toArray();
-        $xls['pre_phone'] = $d[1][1];
-    } else {
-        $xls['pre_phone'] = '';
+    $folder_path = $xls_path . "\\" . $folder . "\\";
+
+    if (!file_exists($folder_path)) {
+        mkdir($folder_path, 0777, true);
     }
-} else {
-    echo json_encode(array('status' => 'error', 'description' => 'XLS previous download file path wrong'));
-    exit;
-}
 
-$folder_path = $xls_path . "\\" . $folder . "\\";
+    if ($index * 1 === 0) {
+        $mySpreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
-if (!file_exists($folder_path)) {
-    mkdir($folder_path, 0777, true);
-}
+        $mySpreadsheet->removeSheetByIndex(0);
+    } else {
+        $mySpreadsheet = $reader->load($folder_path . "\\" . $folder . '_PALM.xls');
+    }
 
-if ($index * 1 === 0) {
-    $mySpreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    $worksheets = [];
 
-    $mySpreadsheet->removeSheetByIndex(0);
-} else {
-    $mySpreadsheet = $reader->load($folder_path . "\\" . $folder . '_PALM.xls');
-}
+    $query = $xls['query'];
+    $sth = $db->prepare("select * from [$query]");
+    $sth->execute();
 
-$worksheets = [];
+    $worksheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($mySpreadsheet, $xls['sheet']);
+    $mySpreadsheet->addSheet($worksheet, $index);
 
-$query = $xls['query'];
-$sth = $db->prepare("select * from [$query]");
-$sth->execute();
-
-$worksheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($mySpreadsheet, $xls['sheet']);
-$mySpreadsheet->addSheet($worksheet, $index);
-
-$data = [];
-
-if ($index * 1 === 5) {
-    array_push($data, ['Date', 'Phone', 'Name', 'Address', 'City', 'State', 'Zip', 'Job Group', 'County']);
-} else {
-    if ($index * 1 === 3)
-        array_push($data, ['Date', 'Phone', 'Name', 'Address', 'City', 'State', 'Zip', 'Job Group', 'COUNTY.COUNTY']);
-    else
-        array_push($data, ['Date', 'Phone', 'Name', 'Address', 'City', 'State', 'Zip', 'Job Group', 'COUNTY']);
-}
-
-
-$xls['count'] = 0;
-while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
-    if ($row['Phone'] == $xls['pre_phone']) break;
+    $data = [];
 
     if ($index * 1 === 5) {
-        array_push($data, [$row['Date'], $row['Phone'], $row['Name'], $row['Address'], $row['City'], $row['State'], $row['Zip'], $row['Job Group'], $row['County']]);
+        array_push($data, ['Date', 'Phone', 'Name', 'Address', 'City', 'State', 'Zip', 'Job Group', 'County']);
     } else {
         if ($index * 1 === 3)
-            array_push($data, [$row['Date'], $row['Phone'], $row['Name'], $row['Address'], $row['City'], $row['State'], $row['Zip'], $row['Job Group'], $row['COUNTY.COUNTY']]);
+            array_push($data, ['Date', 'Phone', 'Name', 'Address', 'City', 'State', 'Zip', 'Job Group', 'COUNTY.COUNTY']);
         else
-            array_push($data, [$row['Date'], $row['Phone'], $row['Name'], $row['Address'], $row['City'], $row['State'], $row['Zip'], $row['Job Group'], $row['COUNTY']]);
+            array_push($data, ['Date', 'Phone', 'Name', 'Address', 'City', 'State', 'Zip', 'Job Group', 'COUNTY']);
     }
 
-    $xls['count'] = $xls['count'] + 1;
-}
+    $tab_last_phone = '';
 
-$worksheet->fromArray($data);
+    $xls['count'] = 0;
+    while ($row = $sth->fetch(PDO::FETCH_ASSOC)) {
+        if ($row['Phone'] == $xls['pre_phone']) break;
 
-$worksheet->getStyle('A1:' . 'N' . ($xls['count'] + 1))->getFont()->setBold(true)
-    ->setName('Arial')
-    ->setSize(8);
+        if (!$tab_last_phone) $tab_last_phone = $row['Phone'];
 
-$mySpreadsheet->setActiveSheetIndex(0);
+        if ($index * 1 === 5) {
+            array_push($data, [$row['Date'], $row['Phone'], $row['Name'], $row['Address'], $row['City'], $row['State'], $row['Zip'], $row['Job Group'], $row['County']]);
+        } else {
+            if ($index * 1 === 3)
+                array_push($data, [$row['Date'], $row['Phone'], $row['Name'], $row['Address'], $row['City'], $row['State'], $row['Zip'], $row['Job Group'], $row['COUNTY.COUNTY']]);
+            else
+                array_push($data, [$row['Date'], $row['Phone'], $row['Name'], $row['Address'], $row['City'], $row['State'], $row['Zip'], $row['Job Group'], $row['COUNTY']]);
+        }
 
-// Save to file.
-$writer = new PhpOffice\PhpSpreadsheet\Writer\Xls($mySpreadsheet);
-$writer->save($folder_path . "\\" . $folder . '_PALM.xls');
+        $xls['count'] = $xls['count'] + 1;
+    }
 
-echo json_encode(array('status' => 'success', 'tab' => $xls));  
+    if ($tab_last_phone) {
+        $lastphone[$xls['phone_key']] = $tab_last_phone;
+        file_put_contents($lastphone_file, json_encode($lastphone));
+    }
+
+    $worksheet->fromArray($data);
+
+    $worksheet->getStyle('A1:' . 'N' . ($xls['count'] + 1))->getFont()->setBold(true)
+        ->setName('Arial')
+        ->setSize(8);
+
+    $mySpreadsheet->setActiveSheetIndex(0);
+
+    // Save to file.
+    $writer = new PhpOffice\PhpSpreadsheet\Writer\Xls($mySpreadsheet);
+    $writer->save($folder_path . "\\" . $folder . '_PALM.xls');
+
+    echo json_encode(array('status' => 'success', 'tab' => $xls, 'lastphone' => $lastphone));
+
 } catch(PDOException $e) {
-echo json_encode(array('status' => 'error', 'description' => 'mdb file path wrong'));
-exit;
+
+    echo json_encode(array('status' => 'error', 'description' => 'mdb file path wrong'));
+    exit;
+
 }
