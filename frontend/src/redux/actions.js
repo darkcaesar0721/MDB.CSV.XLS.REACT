@@ -108,10 +108,10 @@ export const setSettingData = (key = 'shai1', rows = {}, callback = function() {
     })
 }
 
-export const downloadCSV = (index, data, callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'controllers/DownloadCSV.php', qs.stringify({
+export const actionDownloadShai = (index, shai, callback = function() {}) => async (dispatch) => {
+    axios.post(APP_API_URL + 'controllers/DownloadShai.php', qs.stringify({
         index,
-        data
+        shai
     }))
         .then(function(resp) {
             if (resp.data.status !== 'error' && resp.data.status !== 'warning') {
@@ -124,10 +124,10 @@ export const downloadCSV = (index, data, callback = function() {}) => async (dis
         })
 }
 
-export const downloadXLSTab = (index, data, callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'controllers/DownloadXLS.php', qs.stringify({
+export const actionDownloadPalm = (index, palm, callback = function() {}) => async (dispatch) => {
+    axios.post(APP_API_URL + 'controllers/DownloadPalm.php', qs.stringify({
         index,
-        data
+        palm
     }))
         .then(function(resp) {
             if (resp.data.status !== 'error' && resp.data.status !== 'warning') {
@@ -140,10 +140,8 @@ export const downloadXLSTab = (index, data, callback = function() {}) => async (
         })
 }
 
-export const uploadStatus = (data, callback = function() {}) => async (dispatch) => {
-    axios.post(APP_API_URL + 'api.php?class=Schedule&fn=upload', qs.stringify({
-        data
-    }))
+export const actionUploadStatus = (callback = function() {}) => async (dispatch) => {
+    axios.post(APP_API_URL + 'api.php?class=Schedule&fn=upload')
         .then(function(resp) {
             callback(resp);
         })

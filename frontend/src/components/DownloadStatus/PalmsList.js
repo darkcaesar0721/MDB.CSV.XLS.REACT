@@ -2,7 +2,7 @@ import {Col, Row, Table, Divider} from "antd";
 import React, {useEffect, useState} from "react";
 import {LoadingOutlined, CheckCircleTwoTone} from "@ant-design/icons";
 
-const XLSTabDownloadStatusList = (props) => {
+const PalmsDownloadStatusList = (props) => {
     const [tableParams, setTableParams] = useState({
         pagination: {
             current: 1,
@@ -18,8 +18,8 @@ const XLSTabDownloadStatusList = (props) => {
             width: 30,
             render: (_, r) => {
                 let number = 0;
-                props.xlsTabs.forEach((c, i) => {
-                    if (c.query === r.query) {
+                props.palms.forEach((c, i) => {
+                    if (c.key === r.key) {
                         number = i + 1;
                         return;
                     }
@@ -53,7 +53,7 @@ const XLSTabDownloadStatusList = (props) => {
             }
         },
         {
-            title: 'Download XLS Sheet Name',
+            title: 'Download Palm Name',
             dataIndex: 'sheet',
             key: 'sheet',
         },
@@ -85,7 +85,7 @@ const XLSTabDownloadStatusList = (props) => {
         <>
             <Row>
                 <Col span={24}>
-                    <Divider><h4>XLS TAB DOWNLOAD STATUS LIST</h4></Divider>
+                    <Divider><h4>PALMS DOWNLOAD STATUS LIST</h4></Divider>
                 </Col>
             </Row>
             <Row style={{marginTop: '0.4rem'}}>
@@ -94,7 +94,7 @@ const XLSTabDownloadStatusList = (props) => {
                         bordered={true}
                         size="small"
                         columns={columns}
-                        dataSource={props.xlsTabs}
+                        dataSource={props.palms}
                         pagination={tableParams.pagination}
                         onChange={handleTableChange}
                         className="antd-custom-table"
@@ -105,4 +105,4 @@ const XLSTabDownloadStatusList = (props) => {
     )
 }
 
-export default XLSTabDownloadStatusList;
+export default PalmsDownloadStatusList;

@@ -5,9 +5,9 @@ import {getPathData, setPathData} from "../redux/actions";
 import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 
 const downloadWayOption = [
-    {value: 'all', label: 'CSV & XLS'},
-    {value: 'csv', label: 'CSV'},
-    {value: 'xls', label: 'XLS'}
+    {value: 'all', label: 'SHAI & PALM'},
+    {value: 'shai', label: 'SHAI'},
+    {value: 'palm', label: 'PALM'}
 ];
 
 const Path = (props) => {
@@ -138,7 +138,7 @@ const Path = (props) => {
                 </Col>
                 <Col span={7} offset={1}>
                     <Form.Item
-                        name={['csv_path']}
+                        name={['shai_path']}
                         label="Shai download folder path"
                         rules={[
                             {
@@ -146,12 +146,12 @@ const Path = (props) => {
                             },
                         ]}
                     >
-                        <Input size="large" placeholder="C:\mdb_work\CSV" onBlur={(e) => {savePath('csv_path')}} onChange={(e) => {handlePathChange('csv_path', e)}}/>
+                        <Input size="large" placeholder="C:\mdb_work\SHAI" onBlur={(e) => {savePath('shai_path')}} onChange={(e) => {handlePathChange('shai_path', e)}}/>
                     </Form.Item>
                 </Col>
                 <Col span={7} offset={1}>
                     <Form.Item
-                        name={['xls_path']}
+                        name={['palm_path']}
                         label="Palm download folder path"
                         rules={[
                             {
@@ -159,35 +159,9 @@ const Path = (props) => {
                             },
                         ]}
                     >
-                        <Input size="large" placeholder="C:\mdb_work\XLS" onBlur={(e) => {savePath('xls_path')}} onChange={(e) => {handlePathChange('xls_path', e)}}/>
+                        <Input size="large" placeholder="C:\mdb_work\PALM" onBlur={(e) => {savePath('palm_path')}} onChange={(e) => {handlePathChange('palm_path', e)}}/>
                     </Form.Item>
                 </Col>
-                {/* <Col span={7} offset={8}>
-                    <Form.Item
-                        name={['csv_previous_path']}
-                        label="CSV previous download folder path"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
-                    >
-                        <Input size="large" placeholder="C:\mdb_work\CSV\02232023 8AM" onBlur={(e) => {savePath('csv_previous_path')}} onChange={(e) => {handlePathChange('csv_previous_path', e)}}/>
-                    </Form.Item>
-                </Col>
-                <Col span={7} offset={1}>
-                    <Form.Item
-                        name={['xls_previous_path']}
-                        label="XLS previous download folder path"
-                        rules={[
-                            {
-                                required: true,
-                            },
-                        ]}
-                    >
-                        <Input size="large" placeholder="C:\mdb_work\XLS\02232023 8AM" onBlur={(e) => {savePath('xls_previous_path')}} onChange={(e) => {handlePathChange('xls_previous_path', e)}}/>
-                    </Form.Item>
-                </Col> */}
                 <Col span={5} offset={2}>
                     <Form.Item
                         name={['folder_name']}

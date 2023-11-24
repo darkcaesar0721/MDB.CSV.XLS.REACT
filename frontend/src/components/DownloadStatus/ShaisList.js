@@ -2,7 +2,7 @@ import {Col, Row, Table, Divider} from "antd";
 import React, {useEffect, useState} from "react";
 import {LoadingOutlined, CheckCircleTwoTone} from "@ant-design/icons";
 
-const CSVDownloadStatusList = (props) => {
+const ShaisDownloadStatusList = (props) => {
     const [tableParams, setTableParams] = useState({
         pagination: {
             current: 1,
@@ -18,8 +18,8 @@ const CSVDownloadStatusList = (props) => {
             width: 30,
             render: (_, r) => {
                 let number = 0;
-                props.csvFiles.forEach((c, i) => {
-                    if (c.query === r.query) {
+                props.shais.forEach((c, i) => {
+                    if (c.key === r.key) {
                         number = i + 1;
                         return;
                     }
@@ -53,7 +53,7 @@ const CSVDownloadStatusList = (props) => {
             }
         },
         {
-            title: 'Download File Name',
+            title: 'Download Shai Name',
             dataIndex: 'file',
             key: 'file',
         },
@@ -85,7 +85,7 @@ const CSVDownloadStatusList = (props) => {
         <>
             <Row>
                 <Col span={24}>
-                    <Divider><h4>CSV FILE DOWNLOAD STATUS LIST</h4></Divider>
+                    <Divider><h4>SHAIS DOWNLOAD STATUS LIST</h4></Divider>
                 </Col>
             </Row>
             <Row style={{marginTop: '0.4rem'}}>
@@ -94,7 +94,7 @@ const CSVDownloadStatusList = (props) => {
                         bordered={true}
                         size="small"
                         columns={columns}
-                        dataSource={props.csvFiles}
+                        dataSource={props.shais}
                         pagination={tableParams.pagination}
                         onChange={handleTableChange}
                         className="antd-custom-table"
@@ -105,4 +105,4 @@ const CSVDownloadStatusList = (props) => {
     )
 }
 
-export default CSVDownloadStatusList;
+export default ShaisDownloadStatusList;
