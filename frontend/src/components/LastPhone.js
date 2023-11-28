@@ -45,9 +45,9 @@ const LastPhone = (props) => {
             <Divider>PALM LAST PHONE NUMBER SETTING</Divider>
             <Row>
                 {
-                    props.palms.map(palm => {
+                    props.palms.map((palm, index) => {
                         return (
-                            <Col span={4}>
+                            <Col span={3} offset={index === 7 || index === 0 ? 1 : 0}>
                                 <Form.Item
                                     name={palm.key}
                                     label={palm.key}
